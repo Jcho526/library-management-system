@@ -1,0 +1,15 @@
+com\example\library\service\CategoryService.class
+com\example\library\entity\BorrowRecord.class
+com\example\library\service\UserService.class
+com\example\library\controller\UserController.class
+com\example\library\entity\User.class
+com\example\library\service\BorrowRecordService.class
+com\example\library\controller\BorrowRecordController.class
+com\example\library\mapper\UserMapper.class
+com\example\library\service\impl\UserServiceImpl.class
+com\example\library\entity\Category.class
+com\example\library\controller\CategoryController.class
+com\example\library\service\impl\BorrowRecordServiceImpl.class
+com\example\library\mapper\CategoryMapper.class
+com\example\library\mapper\BorrowRecordMapper.class
+com\example\library\service\impl\CategoryServiceImpl.class

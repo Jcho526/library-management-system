@@ -1,0 +1,23 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:sqlserver://localhost:1433;databaseName=library_db;encrypt=false;trustServerCertificate=true
+    username: sa
+    password: DuYuanRun123
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+  web:
+    resources:
+      cache:
+        period: 0
+        cachecontrol:
+          no-cache: true
+          no-store: true
+          must-revalidate: true
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.example.library.entity
+  configuration:
+    map-underscore-to-camel-case: true
