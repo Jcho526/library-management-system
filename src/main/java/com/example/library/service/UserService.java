@@ -18,4 +18,8 @@ public interface UserService {
      * 根据用户名查找用户
      */
     User findByUsername(String username);
+
+    User findReaderById(Long id);
+
+    boolean updateReader(User user);
 }

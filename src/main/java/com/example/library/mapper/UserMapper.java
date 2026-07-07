@@ -10,5 +10,9 @@ public interface UserMapper {
 
     User findReaderByUsername(String username);
 
+    User findReaderById(Long id);
+
     int insertReader(User user);
+    
+    int updateReader(User user);
 }

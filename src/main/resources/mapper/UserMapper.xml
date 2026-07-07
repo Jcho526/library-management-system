@@ -9,6 +9,12 @@
         <result property="password" column="password"/>
         <result property="role" column="role"/>
         <result property="createTime" column="create_time"/>
+        <result property="realName" column="real_name"/>
+        <result property="email" column="email"/>
+        <result property="phone" column="phone"/>
+        <result property="maxBooks" column="max_books"/>
+        <result property="status" column="status"/>
+        <result property="gender" column="gender"/>
     </resultMap>
 
     <select id="findAdminByUsername" parameterType="String" resultMap="UserResultMap">
@@ -18,9 +24,15 @@
     </select>
 
     <select id="findReaderByUsername" parameterType="String" resultMap="UserResultMap">
-        SELECT id, username, password, 'user' as role, create_time
+        SELECT id, username, password, real_name, email, phone, max_books, status, gender, 'user' as role, create_time
         FROM dbo.t_user
         WHERE username = #{username}
+    </select>
+
+    <select id="findReaderById" parameterType="java.lang.Long" resultMap="UserResultMap">
+        SELECT id, username, password, real_name, email, phone, max_books, status, gender, 'user' as role, create_time
+        FROM dbo.t_user
+        WHERE id = #{id}
     </select>
 
     <insert id="insertReader" parameterType="com.example.library.entity.User">
@@ -28,4 +40,15 @@
         VALUES (#{username}, #{password}, 1, GETDATE(), GETDATE())
     </insert>
 
+    <update id="updateReader" parameterType="com.example.library.entity.User">
+        UPDATE dbo.t_user
+        <set>
+            <if test="realName != null">real_name = #{realName},</if>
+            <if test="gender != null">gender = #{gender},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            update_time = GETDATE()
+        </set>
+        WHERE id = #{id}
+    </update>
 </mapper>

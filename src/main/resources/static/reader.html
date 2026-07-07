@@ -124,15 +124,10 @@
         .profile-avatar {
             width: 100px;
             height: 100px;
-            background: linear-gradient(135deg, #409eff, #5a8ef0);
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 40px;
-            font-weight: bold;
+            object-fit: cover;
             box-shadow: 0 4px 15px rgba(64,158,255,0.3);
+            border: 3px solid #fff;
         }
         .profile-info h3 {
             font-size: 24px;
@@ -192,6 +187,84 @@
             font-size: 40px;
             margin-bottom: 10px;
         }
+
+        /* ── Modal ── */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.4);
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            border-radius: 10px;
+            padding: 30px;
+            width: 400px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover { color: #333; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-size: 14px;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        .form-actions button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn-cancel { background: #f1f2f5; color: #666; }
+        .btn-submit { background: linear-gradient(135deg, #409eff, #5a8ef0); color: white; }
+        .btn-edit {
+            background: #fff;
+            color: #409eff;
+            border: 1px solid #409eff;
+            padding: 6px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            margin-left: 15px;
+            vertical-align: middle;
+            transition: all 0.2s;
+        }
+        .btn-edit:hover {
+            background: #409eff;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -218,12 +291,21 @@
         
         <!-- 页面：个人中心 -->
         <div class="page active" id="page-profile">
-            <h2 class="page-title">个人信息</h2>
+            <h2 class="page-title">
+                个人信息
+                <button class="btn-edit" onclick="openEditModal()">编辑信息</button>
+            </h2>
             <div class="profile-card">
-                <div class="profile-avatar" id="avatar-letter">?</div>
+                <img class="profile-avatar" id="avatar-img" src="" alt="头像" style="display:none;">
+                <div class="profile-avatar" id="avatar-letter" style="background: linear-gradient(135deg, #409eff, #5a8ef0); color: #fff; font-size: 40px; display: flex; align-items: center; justify-content: center; font-weight: bold;">?</div>
                 <div class="profile-info">
                     <h3 id="profile-username">---</h3>
+                    <p>真实姓名：<strong id="profile-realname">---</strong></p>
+                    <p>性别：<span id="profile-gender">---</span></p>
+                    <p>邮箱：<span id="profile-email">---</span></p>
+                    <p>手机号：<span id="profile-phone">---</span></p>
                     <p>用户 ID：<strong id="profile-id">---</strong></p>
+                    <p>借阅额度：<span id="profile-maxbooks">---</span></p>
                     <p>注册时间：<span id="profile-date">---</span></p>
                     <span class="badge">读者</span>
                 </div>
@@ -253,6 +335,44 @@
             </div>
         </div>
 
+    </div>
+
+    <!-- 编辑个人信息 Modal -->
+    <div id="editModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeEditModal()">&times;</span>
+            <h2>编辑个人信息</h2>
+            <form id="editForm" onsubmit="handleEditSubmit(event)">
+                <div class="form-group">
+                    <label>更换头像</label>
+                    <input type="file" id="edit-avatar" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <label>真实姓名</label>
+                    <input type="text" id="edit-realname" placeholder="请输入真实姓名">
+                </div>
+                <div class="form-group">
+                    <label>性别</label>
+                    <select id="edit-gender">
+                        <option value="未知">未知</option>
+                        <option value="男">男</option>
+                        <option value="女">女</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>手机号</label>
+                    <input type="text" id="edit-phone" placeholder="请输入手机号">
+                </div>
+                <div class="form-group">
+                    <label>邮箱</label>
+                    <input type="email" id="edit-email" placeholder="请输入邮箱">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" onclick="closeEditModal()">取消</button>
+                    <button type="submit" class="btn-submit">保存</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <script>
@@ -291,6 +411,45 @@
                         document.getElementById('profile-username').textContent = data.username;
                         document.getElementById('profile-id').textContent = data.id;
                         document.getElementById('profile-date').textContent = formatDateTime(data.createTime);
+                        
+                        document.getElementById('profile-realname').textContent = data.realName || '未填写';
+                        document.getElementById('profile-gender').textContent = data.gender || '未知';
+                        document.getElementById('profile-email').textContent = data.email || '未填写';
+                        document.getElementById('profile-phone').textContent = data.phone || '未填写';
+                        document.getElementById('profile-maxbooks').textContent = data.maxBooks || '5';
+
+                        // 渲染头像：先尝试加载自定义头像，如果失败则回退到默认头像
+                        const avatarImg = document.getElementById('avatar-img');
+                        const avatarLetter = document.getElementById('avatar-letter');
+                        
+                        let defaultAvatar = '';
+                        if (data.gender === '女') {
+                            defaultAvatar = '/User_Picture/user_id3.png';
+                        } else {
+                            const maleAvatars = ['User_id.png', 'User_id2.png', 'user_id4.png'];
+                            const index = (data.id || 0) % maleAvatars.length;
+                            defaultAvatar = '/User_Picture/' + maleAvatars[index];
+                        }
+                        
+                        const customAvatar = '/User_Picture/custom_avatar_' + data.id + '.png?t=' + new Date().getTime();
+                        
+                        const img = new Image();
+                        img.onload = () => {
+                            avatarImg.src = img.src;
+                            avatarImg.style.display = 'block';
+                            avatarLetter.style.display = 'none';
+                        };
+                        img.onerror = () => {
+                            if (img.src.includes('custom_avatar_')) {
+                                img.src = defaultAvatar;
+                            } else {
+                                avatarImg.style.display = 'none';
+                                avatarLetter.style.display = 'flex';
+                                avatarLetter.textContent = data.username.charAt(0).toUpperCase();
+                            }
+                        };
+                        // 开始加载
+                        img.src = customAvatar;
                     }
                 })
                 .catch(err => console.error('加载个人信息失败', err));
@@ -298,40 +457,97 @@
 
         // 加载我的借阅
         function loadBorrows() {
+            const tbody = document.getElementById('borrowTableBody');
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#999;padding:40px;">加载中...</td></tr>';
+            
             fetch('/api/auth/my-borrows')
                 .then(r => r.json())
-                .then(data => {
-                    const tbody = document.getElementById('borrowTableBody');
-                    tbody.innerHTML = '';
-                    if (!data || data.length === 0) {
-                        tbody.innerHTML = `<tr><td colspan="7">
-                            <div class="empty-state">
-                                <div class="empty-icon">📭</div>
-                                <p>您还没有借阅过图书</p>
-                            </div>
-                        </td></tr>`;
+                .then(records => {
+                    if (!records || records.length === 0) {
+                        tbody.innerHTML = `
+                            <tr>
+                                <td colspan="7" style="text-align:center;padding:60px 0;">
+                                    <div class="empty-icon">📚</div>
+                                    <div style="color:#999;">暂无借阅记录</div>
+                                </td>
+                            </tr>
+                        `;
                         return;
                     }
-                    data.forEach(record => {
+                    
+                    tbody.innerHTML = '';
+                    records.forEach(r => {
                         let statusHtml = '';
-                        if (record.status === 0) statusHtml = '<span style="color:#e6a23c;font-weight:600;background:#fff3e0;padding:3px 10px;border-radius:12px;border:1px solid #ffd591;">📖 借阅中</span>';
-                        else if (record.status === 1) statusHtml = '<span style="color:#67c23a;font-weight:600;background:#f0f9eb;padding:3px 10px;border-radius:12px;border:1px solid #b7eb8f;">✅ 已归还</span>';
-                        else if (record.status === 2) statusHtml = '<span style="color:#f56c6c;font-weight:600;background:#fef0f0;padding:3px 10px;border-radius:12px;border:1px solid #fbc4c4;">⚠️ 已逾期</span>';
-
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${record.id}</td>
-                            <td><strong>${record.bookName || '未知图书(ID:' + record.bookId + ')'}</strong></td>
-                            <td style="color:#666;font-size:13px;">${formatDateTime(record.borrowTime)}</td>
-                            <td style="color:#666;font-size:13px;">${formatDateTime(record.dueTime)}</td>
-                            <td style="color:#666;font-size:13px;">${record.returnTime ? formatDateTime(record.returnTime) : '-'}</td>
+                        if (r.status === 0) statusHtml = '<span class="status-badge status-borrowing">📖 借阅中</span>';
+                        else if (r.status === 1) statusHtml = '<span class="status-badge status-returned">✅ 已归还</span>';
+                        else if (r.status === 2) statusHtml = '<span class="status-badge status-overdue">⚠️ 已逾期</span>';
+                        
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${r.id}</td>
+                            <td><strong>${r.bookName || '未知图书'}</strong></td>
+                            <td style="color:#666;">${formatDateTime(r.borrowTime)}</td>
+                            <td style="color:#666;">${formatDateTime(r.dueTime)}</td>
+                            <td style="color:#666;">${formatDateTime(r.returnTime) || '-'}</td>
                             <td>${statusHtml}</td>
-                            <td style="color:#999;font-size:13px;">${record.remark || '-'}</td>
+                            <td style="color:#999;">${r.remark || '-'}</td>
                         `;
-                        tbody.appendChild(row);
+                        tbody.appendChild(tr);
                     });
                 })
                 .catch(err => console.error('加载借阅记录失败', err));
+        }
+
+        // 编辑个人信息模态框逻辑
+        function openEditModal() {
+            document.getElementById('edit-realname').value = document.getElementById('profile-realname').textContent !== '未填写' ? document.getElementById('profile-realname').textContent : '';
+            document.getElementById('edit-gender').value = document.getElementById('profile-gender').textContent !== '未知' ? document.getElementById('profile-gender').textContent : '未知';
+            document.getElementById('edit-phone').value = document.getElementById('profile-phone').textContent !== '未填写' ? document.getElementById('profile-phone').textContent : '';
+            document.getElementById('edit-email').value = document.getElementById('profile-email').textContent !== '未填写' ? document.getElementById('profile-email').textContent : '';
+            document.getElementById('editModal').style.display = 'flex';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        function handleEditSubmit(e) {
+            e.preventDefault();
+            const payload = {
+                realName: document.getElementById('edit-realname').value,
+                gender: document.getElementById('edit-gender').value,
+                phone: document.getElementById('edit-phone').value,
+                email: document.getElementById('edit-email').value
+            };
+            
+            const profileReq = fetch('/api/auth/profile/update', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            }).then(r => r.json());
+
+            const avatarFile = document.getElementById('edit-avatar').files[0];
+            let avatarReq = Promise.resolve({success: true});
+            if (avatarFile) {
+                const formData = new FormData();
+                formData.append('file', avatarFile);
+                avatarReq = fetch('/api/auth/profile/avatar', {
+                    method: 'POST',
+                    body: formData
+                }).then(r => r.json());
+            }
+
+            Promise.all([profileReq, avatarReq])
+            .then(([profileRes, avatarRes]) => {
+                if(profileRes.success && (avatarRes.success || !avatarFile)) {
+                    alert('保存成功');
+                    closeEditModal();
+                    loadProfile(); 
+                } else {
+                    alert('部分或全部保存失败: ' + (profileRes.message || '') + ' ' + (avatarRes.message || ''));
+                }
+            })
+            .catch(() => alert('网络错误'));
         }
 
         // 格式化时间

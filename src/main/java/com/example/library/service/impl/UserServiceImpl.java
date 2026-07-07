@@ -60,4 +60,16 @@ public class UserServiceImpl implements UserService {
         if (admin != null) return admin;
         return userMapper.findReaderByUsername(username.trim());
     }
+
+    @Override
+    public User findReaderById(Long id) {
+        if (id == null) return null;
+        return userMapper.findReaderById(id);
+    }
+
+    @Override
+    public boolean updateReader(User user) {
+        if (user == null || user.getId() == null) return false;
+        return userMapper.updateReader(user) > 0;
+    }
 }
