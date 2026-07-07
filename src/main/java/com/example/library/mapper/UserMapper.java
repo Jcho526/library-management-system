@@ -6,7 +6,9 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface UserMapper {
 
-    User findByUsername(String username);
+    User findAdminByUsername(String username);
 
-    int insert(User user);
+    User findReaderByUsername(String username);
+
+    int insertReader(User user);
 }

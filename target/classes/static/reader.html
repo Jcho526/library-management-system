@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>图书管理系统 - 读者端</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+
+        /* ── 顶部导航栏 ── */
+        .navbar {
+            background: linear-gradient(135deg, #7c3aed 0%, #0ea5e9 100%);
+            height: 60px;
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            color: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-logo {
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-right: 50px;
+        }
+        .nav-links {
+            flex: 1;
+            display: flex;
+            gap: 20px;
+        }
+        .nav-link {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .nav-link:hover {
+            color: #fff;
+            background: rgba(255,255,255,0.15);
+        }
+        .nav-link.active {
+            color: #fff;
+            background: rgba(255,255,255,0.2);
+            font-weight: 600;
+        }
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .user-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .btn-logout {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.2s;
+        }
+        .btn-logout:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* ── 主内容区 ── */
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .page.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .page-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        /* ── 个人中心卡片 ── */
+        .profile-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #409eff, #5a8ef0);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 40px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(64,158,255,0.3);
+        }
+        .profile-info h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .profile-info p {
+            font-size: 15px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        .profile-info span.badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #ecf5ff;
+            color: #409eff;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        /* ── 表格 ── */
+        .table-card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 15px 20px;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+        }
+        th {
+            background-color: #fafbfc;
+            font-weight: 600;
+            color: #5c6b77;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover td {
+            background-color: #f5f8ff;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px 0;
+            color: #888;
+        }
+        .empty-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部导航栏 -->
+    <div class="navbar">
+        <div class="nav-logo">
+            <span>📚</span>
+            <span>读者中心</span>
+        </div>
+        <div class="nav-links">
+            <div class="nav-link active" id="nav-profile" onclick="switchPage('profile')">个人中心</div>
+            <div class="nav-link" id="nav-borrows" onclick="switchPage('borrows')">我的借阅</div>
+            <div class="nav-link" style="color: #fca5a5;" onclick="goToAdminLogin()">管理员入口</div>
+        </div>
+        <div class="nav-user">
+            <div class="user-name" id="top-username">读取中...</div>
+            <button class="btn-logout" onclick="logout()">退出登录</button>
+        </div>
+    </div>
+
+    <!-- 主内容区 -->
+    <div class="container">
+        
+        <!-- 页面：个人中心 -->
+        <div class="page active" id="page-profile">
+            <h2 class="page-title">个人信息</h2>
+            <div class="profile-card">
+                <div class="profile-avatar" id="avatar-letter">?</div>
+                <div class="profile-info">
+                    <h3 id="profile-username">---</h3>
+                    <p>用户 ID：<strong id="profile-id">---</strong></p>
+                    <p>注册时间：<span id="profile-date">---</span></p>
+                    <span class="badge">读者</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 页面：我的借阅 -->
+        <div class="page" id="page-borrows">
+            <h2 class="page-title">我的借阅记录</h2>
+            <div class="table-card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>借阅编号</th>
+                            <th>书名</th>
+                            <th>借阅时间</th>
+                            <th>应还时间</th>
+                            <th>归还时间</th>
+                            <th>状态</th>
+                            <th>备注</th>
+                        </tr>
+                    </thead>
+                    <tbody id="borrowTableBody">
+                        <!-- JS 渲染 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // 检查登录状态
+        fetch('/api/auth/status')
+            .then(r => r.json())
+            .then(d => {
+                if (!d.loggedIn || d.role === 'admin') {
+                    location.replace('/');
+                } else {
+                    document.getElementById('top-username').textContent = d.username;
+                    document.getElementById('avatar-letter').textContent = d.username.charAt(0).toUpperCase();
+                    loadProfile();
+                }
+            })
+            .catch(() => location.replace('/'));
+
+        // 页面切换
+        function switchPage(page) {
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById('nav-' + page).classList.add('active');
+            document.getElementById('page-' + page).classList.add('active');
+
+            if (page === 'profile') loadProfile();
+            if (page === 'borrows') loadBorrows();
+        }
+
+        // 加载个人信息
+        function loadProfile() {
+            fetch('/api/auth/profile')
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('profile-username').textContent = data.username;
+                        document.getElementById('profile-id').textContent = data.id;
+                        document.getElementById('profile-date').textContent = formatDateTime(data.createTime);
+                    }
+                })
+                .catch(err => console.error('加载个人信息失败', err));
+        }
+
+        // 加载我的借阅
+        function loadBorrows() {
+            fetch('/api/auth/my-borrows')
+                .then(r => r.json())
+                .then(data => {
+                    const tbody = document.getElementById('borrowTableBody');
+                    tbody.innerHTML = '';
+                    if (!data || data.length === 0) {
+                        tbody.innerHTML = `<tr><td colspan="7">
+                            <div class="empty-state">
+                                <div class="empty-icon">📭</div>
+                                <p>您还没有借阅过图书</p>
+                            </div>
+                        </td></tr>`;
+                        return;
+                    }
+                    data.forEach(record => {
+                        let statusHtml = '';
+                        if (record.status === 0) statusHtml = '<span style="color:#e6a23c;font-weight:600;background:#fff3e0;padding:3px 10px;border-radius:12px;border:1px solid #ffd591;">📖 借阅中</span>';
+                        else if (record.status === 1) statusHtml = '<span style="color:#67c23a;font-weight:600;background:#f0f9eb;padding:3px 10px;border-radius:12px;border:1px solid #b7eb8f;">✅ 已归还</span>';
+                        else if (record.status === 2) statusHtml = '<span style="color:#f56c6c;font-weight:600;background:#fef0f0;padding:3px 10px;border-radius:12px;border:1px solid #fbc4c4;">⚠️ 已逾期</span>';
+
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${record.id}</td>
+                            <td><strong>${record.bookName || '未知图书(ID:' + record.bookId + ')'}</strong></td>
+                            <td style="color:#666;font-size:13px;">${formatDateTime(record.borrowTime)}</td>
+                            <td style="color:#666;font-size:13px;">${formatDateTime(record.dueTime)}</td>
+                            <td style="color:#666;font-size:13px;">${record.returnTime ? formatDateTime(record.returnTime) : '-'}</td>
+                            <td>${statusHtml}</td>
+                            <td style="color:#999;font-size:13px;">${record.remark || '-'}</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                })
+                .catch(err => console.error('加载借阅记录失败', err));
+        }
+
+        // 格式化时间
+        function formatDateTime(dateTime) {
+            if (!dateTime) return '';
+            const date = new Date(dateTime);
+            return date.toLocaleString('zh-CN', {
+                year: 'numeric', month: '2-digit', day: '2-digit',
+                hour: '2-digit', minute: '2-digit', second: '2-digit'
+            });
+        }
+
+        // 退出登录
+        function logout() {
+            fetch('/api/auth/logout', { method: 'POST' })
+                .then(() => location.replace('/'))
+                .catch(() => location.replace('/'));
+        }
+
+        // 跳转管理员登录
+        function goToAdminLogin() {
+            if (confirm("即将退出当前读者账号并前往登录页，是否继续？")) {
+                fetch('/api/auth/logout', { method: 'POST' })
+                    .then(() => location.replace('/'))
+                    .catch(() => location.replace('/'));
+            }
+        }
+    </script>
+</body>
+</html>

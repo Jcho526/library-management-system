@@ -16,6 +16,9 @@ public class Book {
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 
+    // 借阅状态：在库 / 借阅中
+    private String borrowStatus;
+
     public Book() {
     }
 
@@ -97,6 +100,14 @@ public class Book {
 
     public void setUpdateTime(LocalDateTime updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getBorrowStatus() {
+        return borrowStatus;
+    }
+
+    public void setBorrowStatus(String borrowStatus) {
+        this.borrowStatus = borrowStatus;
     }
 
     @Override

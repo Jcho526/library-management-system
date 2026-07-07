@@ -25,8 +25,31 @@ public class BorrowRecordServiceImpl implements BorrowRecordService {
     }
 
     @Override
+    public List<BorrowRecord> search(String keyword, Integer status) {
+        return borrowRecordMapper.search(keyword, status);
+    }
+
+    @Override
+    public List<BorrowRecord> findByUserId(Long userId) {
+        return borrowRecordMapper.findByUserId(userId);
+    }
+
+    @Override
     public BorrowRecord findById(Long id) {
         return borrowRecordMapper.findById(id);
+    }
+
+    @Override
+    public int addBorrowRecord(BorrowRecord record) {
+        // 默认状态：借阅中
+        if (record.getStatus() == null) {
+            record.setStatus(0);
+        }
+        // 默认借阅时间：当前时间
+        if (record.getBorrowTime() == null) {
+            record.setBorrowTime(LocalDateTime.now());
+        }
+        return borrowRecordMapper.insert(record);
     }
 
     @Override

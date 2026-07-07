@@ -11,15 +11,21 @@
         <result property="createTime" column="create_time"/>
     </resultMap>
 
-    <select id="findByUsername" parameterType="String" resultMap="UserResultMap">
-        SELECT id, username, password, role, create_time
+    <select id="findAdminByUsername" parameterType="String" resultMap="UserResultMap">
+        SELECT id, username, password, 'admin' as role, create_time
         FROM dbo.uer
         WHERE username = #{username}
     </select>
 
-    <insert id="insert" parameterType="com.example.library.entity.User">
-        INSERT INTO dbo.uer (username, password, role, create_time)
-        VALUES (#{username}, #{password}, #{role}, GETDATE())
+    <select id="findReaderByUsername" parameterType="String" resultMap="UserResultMap">
+        SELECT id, username, password, 'user' as role, create_time
+        FROM dbo.t_user
+        WHERE username = #{username}
+    </select>
+
+    <insert id="insertReader" parameterType="com.example.library.entity.User">
+        INSERT INTO dbo.t_user (username, password, status, create_time, update_time)
+        VALUES (#{username}, #{password}, 1, GETDATE(), GETDATE())
     </insert>
 
 </mapper>

@@ -1,6 +1,8 @@
 package com.example.library.controller;
 
+import com.example.library.entity.BorrowRecord;
 import com.example.library.entity.User;
+import com.example.library.service.BorrowRecordService;
 import com.example.library.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -16,15 +19,15 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
+    private final BorrowRecordService borrowRecordService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, BorrowRecordService borrowRecordService) {
         this.userService = userService;
+        this.borrowRecordService = borrowRecordService;
     }
 
-    /**
-     * 登录接口
-     */
+    /** 登录接口 */
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(
             @RequestBody Map<String, String> credentials,
@@ -36,14 +39,14 @@ public class UserController {
 
         User user = userService.login(username, password);
         if (user != null) {
-            // 将用户信息存入 Session（密码脱敏）
             user.setPassword(null);
             session.setAttribute("currentUser", user);
-            session.setMaxInactiveInterval(3600); // 1小时过期
+            session.setMaxInactiveInterval(3600);
             response.put("success", true);
             response.put("message", "登录成功");
             response.put("username", user.getUsername());
             response.put("role", user.getRole());
+            response.put("userId", user.getId());
         } else {
             response.put("success", false);
             response.put("message", "用户名或密码错误");
@@ -51,9 +54,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * 注册接口
-     */
+    /** 注册接口 */
     @PostMapping("/register")
     public ResponseEntity<Map<String, Object>> register(
             @RequestBody Map<String, String> userData) {
@@ -84,9 +85,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * 退出登录
-     */
+    /** 退出登录 */
     @PostMapping("/logout")
     public ResponseEntity<Map<String, Object>> logout(HttpSession session) {
         session.invalidate();
@@ -96,9 +95,7 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * 查询当前登录状态
-     */
+    /** 查询当前登录状态 */
     @GetMapping("/status")
     public ResponseEntity<Map<String, Object>> status(HttpSession session) {
         Map<String, Object> response = new HashMap<>();
@@ -107,9 +104,39 @@ public class UserController {
             response.put("loggedIn", true);
             response.put("username", user.getUsername());
             response.put("role", user.getRole());
+            response.put("userId", user.getId());
         } else {
             response.put("loggedIn", false);
         }
         return ResponseEntity.ok(response);
+    }
+
+    /** 读者：获取个人信息 */
+    @GetMapping("/profile")
+    public ResponseEntity<Map<String, Object>> getProfile(HttpSession session) {
+        Map<String, Object> response = new HashMap<>();
+        User user = (User) session.getAttribute("currentUser");
+        if (user == null) {
+            response.put("success", false);
+            response.put("message", "未登录");
+            return ResponseEntity.status(401).body(response);
+        }
+        response.put("success", true);
+        response.put("id", user.getId());
+        response.put("username", user.getUsername());
+        response.put("role", user.getRole());
+        response.put("createTime", user.getCreateTime());
+        return ResponseEntity.ok(response);
+    }
+
+    /** 读者：获取自己的借阅记录 */
+    @GetMapping("/my-borrows")
+    public ResponseEntity<?> getMyBorrows(HttpSession session) {
+        User user = (User) session.getAttribute("currentUser");
+        if (user == null) {
+            return ResponseEntity.status(401).body(Map.of("success", false, "message", "未登录"));
+        }
+        List<BorrowRecord> records = borrowRecordService.findByUserId(user.getId());
+        return ResponseEntity.ok(records);
     }
 }

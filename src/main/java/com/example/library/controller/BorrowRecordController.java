@@ -28,6 +28,29 @@ public class BorrowRecordController {
         return ResponseEntity.ok(records);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<BorrowRecord>> searchBorrowRecords(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) Integer status) {
+        List<BorrowRecord> records = borrowRecordService.search(keyword, status);
+        return ResponseEntity.ok(records);
+    }
+
+    @PostMapping
+    public ResponseEntity<Map<String, Object>> addBorrowRecord(@RequestBody BorrowRecord record) {
+        Map<String, Object> response = new HashMap<>();
+        int result = borrowRecordService.addBorrowRecord(record);
+        if (result > 0) {
+            response.put("success", true);
+            response.put("message", "借阅记录添加成功");
+            return ResponseEntity.ok(response);
+        } else {
+            response.put("success", false);
+            response.put("message", "借阅记录添加失败");
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
     @PutMapping("/{id}/return")
     public ResponseEntity<Map<String, Object>> returnBook(@PathVariable Long id, @RequestBody Map<String, String> body) {
         Map<String, Object> response = new HashMap<>();
