@@ -16,6 +16,9 @@ public class Book {
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 
+    // AI 生成的图书摘要
+    private String summary;
+
     // 借阅状态：在库 / 借阅中
     private String borrowStatus;
 
@@ -102,6 +105,14 @@ public class Book {
         this.updateTime = updateTime;
     }
 
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
     public String getBorrowStatus() {
         return borrowStatus;
     }
@@ -123,6 +134,7 @@ public class Book {
                 ", categoryId=" + categoryId +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
+                ", summary='" + summary + '\'' +
                 '}';
     }
 }

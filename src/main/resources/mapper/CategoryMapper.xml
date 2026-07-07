@@ -14,13 +14,13 @@
 
     <select id="findAll" resultMap="CategoryResultMap">
         SELECT id, name, parent_id, sort, create_time, update_time
-        FROM dbo.t_category
+        FROM t_category
         ORDER BY sort ASC, id ASC
     </select>
 
     <select id="findById" parameterType="java.lang.Long" resultMap="CategoryResultMap">
         SELECT id, name, parent_id, sort, create_time, update_time
-        FROM dbo.t_category
+        FROM t_category
         WHERE id = #{id}
     </select>
 

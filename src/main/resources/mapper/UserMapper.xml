@@ -19,35 +19,35 @@
 
     <select id="findAdminByUsername" parameterType="String" resultMap="UserResultMap">
         SELECT id, username, password, 'admin' as role, create_time
-        FROM dbo.uer
+        FROM uer
         WHERE username = #{username}
     </select>
 
     <select id="findReaderByUsername" parameterType="String" resultMap="UserResultMap">
         SELECT id, username, password, real_name, email, phone, max_books, status, gender, 'user' as role, create_time
-        FROM dbo.t_user
+        FROM t_user
         WHERE username = #{username}
     </select>
 
     <select id="findReaderById" parameterType="java.lang.Long" resultMap="UserResultMap">
         SELECT id, username, password, real_name, email, phone, max_books, status, gender, 'user' as role, create_time
-        FROM dbo.t_user
+        FROM t_user
         WHERE id = #{id}
     </select>
 
     <insert id="insertReader" parameterType="com.example.library.entity.User">
-        INSERT INTO dbo.t_user (username, password, status, create_time, update_time)
-        VALUES (#{username}, #{password}, 1, GETDATE(), GETDATE())
+        INSERT INTO t_user (username, password, status, create_time, update_time)
+        VALUES (#{username}, #{password}, 1, NOW(), NOW())
     </insert>
 
     <update id="updateReader" parameterType="com.example.library.entity.User">
-        UPDATE dbo.t_user
+        UPDATE t_user
         <set>
             <if test="realName != null">real_name = #{realName},</if>
             <if test="gender != null">gender = #{gender},</if>
             <if test="email != null">email = #{email},</if>
             <if test="phone != null">phone = #{phone},</if>
-            update_time = GETDATE()
+            update_time = NOW()
         </set>
         WHERE id = #{id}
     </update>
