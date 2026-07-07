@@ -265,7 +265,150 @@
             background: #409eff;
             color: #fff;
         }
+        
+        /* ── Dashboard Styles ── */
+        #page-home {
+            background-color: #060a14;
+            color: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.6);
+            margin: 0 auto;
+        }
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        .dashboard-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #00ffff;
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+            letter-spacing: 2px;
+            text-align: center;
+            flex: 1;
+        }
+        .dashboard-time {
+            font-size: 16px;
+            color: #ccc;
+            width: 200px;
+            text-align: right;
+        }
+        .dashboard-grid {
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+            gap: 20px;
+            width: 100%;
+        }
+        .dashboard-col {
+            display: flex;
+            flex-direction: column;
+        }
+        .dashboard-col-side {
+            width: calc(25% - 10px);
+            flex-shrink: 0;
+        }
+        .dashboard-col-center {
+            width: calc(50% - 20px);
+            flex-shrink: 0;
+        }
+        .dashboard-panel {
+            background: rgba(13, 25, 48, 0.8);
+            border: 1px solid #1a3c61;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.1) inset;
+        }
+        .panel-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 15px;
+            border-left: 4px solid #00ffff;
+            padding-left: 10px;
+        }
+        
+        /* Dashboard specific elements */
+        .metrics-row {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        .metric-item {
+            text-align: center;
+        }
+        .metric-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #00ffff;
+            text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+        }
+        .metric-label {
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
+        }
+        
+        .realtime-list {
+            height: 300px;
+            overflow: hidden;
+            position: relative;
+        }
+        .realtime-list-inner {
+            animation: scrollUp 20s linear infinite;
+        }
+        .realtime-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 14px;
+        }
+        .realtime-item .user { color: #00ffff; font-weight: bold; }
+        .realtime-item .book { color: #f5a623; font-weight: bold; }
+        .realtime-item .time { color: #666; font-size: 12px; }
+        @keyframes scrollUp {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-50%); }
+        }
+        
+        .floor-heatmap {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .floor-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .floor-label {
+            font-weight: bold;
+            color: #fff;
+            width: 30px;
+        }
+        .floor-blocks {
+            display: flex;
+            flex: 1;
+            gap: 10px;
+        }
+        .floor-block {
+            flex: 1;
+            padding: 15px 10px;
+            text-align: center;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 14px;
+        }
+        .block-red { background-color: #d9534f; }
+        .block-yellow { background-color: #f0ad4e; }
+        .block-green { background-color: #5cb85c; }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
 </head>
 <body>
 
@@ -276,7 +419,9 @@
             <span>读者中心</span>
         </div>
         <div class="nav-links">
-            <div class="nav-link active" id="nav-profile" onclick="switchPage('profile')">个人中心</div>
+            <div class="nav-link active" id="nav-home" onclick="switchPage('home')">首页</div>
+            <div class="nav-link" id="nav-profile" onclick="switchPage('profile')">个人中心</div>
+            <div class="nav-link" id="nav-books" onclick="switchPage('books')">图书查询</div>
             <div class="nav-link" id="nav-borrows" onclick="switchPage('borrows')">我的借阅</div>
             <div class="nav-link" style="color: #fca5a5;" onclick="goToAdminLogin()">管理员入口</div>
         </div>
@@ -289,8 +434,116 @@
     <!-- 主内容区 -->
     <div class="container">
         
+        <!-- 页面：首页 (可视化大屏) -->
+        <div class="page active" id="page-home">
+            <div class="dashboard-header">
+                <div></div>
+                <div class="dashboard-title">智慧图书馆大数据可视化平台</div>
+                <div class="dashboard-time" id="dashTime">2026/7/7 15:37:28</div>
+            </div>
+            
+            <div class="dashboard-grid">
+                <!-- 左侧 -->
+                <div class="dashboard-col dashboard-col-side">
+                    <div class="dashboard-panel" style="height: 380px; margin-bottom: 20px;">
+                        <div class="panel-title">近7日借阅趋势</div>
+                        <div id="chartTrend" style="width: 100%; height: 320px;"></div>
+                    </div>
+                    <div class="dashboard-panel" style="flex: 1;">
+                        <div class="panel-title">区域人员性别分布</div>
+                        <div id="chartGender" style="width: 100%; height: 280px;"></div>
+                    </div>
+                </div>
+                
+                <!-- 中间 -->
+                <div class="dashboard-col dashboard-col-center">
+                    <div class="dashboard-panel" style="margin-bottom: 20px;">
+                        <div class="metrics-row">
+                            <div class="metric-item">
+                                <div class="metric-value" id="valTodayBorrows">--</div>
+                                <div class="metric-label">今日借阅量</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value" id="valTodayVisitors">--</div>
+                                <div class="metric-label">今日到馆人数</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value" id="valTodayNewReaders">--</div>
+                                <div class="metric-label">今日新增读者</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-panel" style="height: 590px;">
+                        <div class="panel-title">图书馆楼层实时热力图</div>
+                        <div class="floor-heatmap">
+                            <div class="floor-row">
+                                <div class="floor-label">5楼</div>
+                                <div class="floor-blocks">
+                                    <div class="floor-block block-red">特藏区<br>169人</div>
+                                    <div class="floor-block block-red">档案室<br>143人</div>
+                                </div>
+                            </div>
+                            <div class="floor-row">
+                                <div class="floor-label">4楼</div>
+                                <div class="floor-blocks">
+                                    <div class="floor-block block-yellow">电子阅览室<br>63人</div>
+                                    <div class="floor-block block-red">研讨室<br>110人</div>
+                                    <div class="floor-block block-red">视听区<br>185人</div>
+                                </div>
+                            </div>
+                            <div class="floor-row">
+                                <div class="floor-label">3楼</div>
+                                <div class="floor-blocks">
+                                    <div class="floor-block block-green">科技书库<br>31人</div>
+                                    <div class="floor-block block-yellow">期刊区<br>76人</div>
+                                </div>
+                            </div>
+                            <div class="floor-row">
+                                <div class="floor-label">2楼</div>
+                                <div class="floor-blocks">
+                                    <div class="floor-block block-yellow">文学区<br>80人</div>
+                                    <div class="floor-block block-yellow">社科区<br>88人</div>
+                                    <div class="floor-block block-red">报刊阅览<br>178人</div>
+                                </div>
+                            </div>
+                            <div class="floor-row">
+                                <div class="floor-label">1楼</div>
+                                <div class="floor-blocks">
+                                    <div class="floor-block block-red">自习东区<br>162人</div>
+                                    <div class="floor-block block-green">自习西区<br>43人</div>
+                                    <div class="floor-block block-green">服务大厅<br>16人</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="text-align: right; margin-top: 30px; font-size: 12px; color: #888;">
+                            <span style="display:inline-block;width:12px;height:12px;background:#5cb85c;margin-right:5px;"></span>空闲 (&lt;50人)
+                            <span style="display:inline-block;width:12px;height:12px;background:#f0ad4e;margin-right:5px;margin-left:10px;"></span>适中 (50-100人)
+                            <span style="display:inline-block;width:12px;height:12px;background:#d9534f;margin-right:5px;margin-left:10px;"></span>拥挤 (&gt;100人)
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 右侧 -->
+                <div class="dashboard-col dashboard-col-side">
+                    <div class="dashboard-panel" style="height: 380px; margin-bottom: 20px;">
+                        <div class="panel-title">热门借阅榜单 Top10</div>
+                        <div id="chartTop" style="width: 100%; height: 320px;"></div>
+                    </div>
+                    <div class="dashboard-panel" style="flex: 1;">
+                        <div class="panel-title">实时借阅动态</div>
+                        <div class="realtime-list">
+                            <div class="realtime-list-inner" id="realtimeList">
+                                <!-- JS渲染 -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <!-- 页面：个人中心 -->
-        <div class="page active" id="page-profile">
+        <div class="page" id="page-profile">
             <h2 class="page-title">
                 个人信息
                 <button class="btn-edit" onclick="openEditModal()">编辑信息</button>
@@ -309,6 +562,33 @@
                     <p>注册时间：<span id="profile-date">---</span></p>
                     <span class="badge">读者</span>
                 </div>
+            </div>
+        </div>
+
+        <!-- 页面：图书查询 -->
+        <div class="page" id="page-books">
+            <h2 class="page-title">图书查询</h2>
+            <div class="table-card" style="padding: 20px;">
+                <div style="margin-bottom: 20px; display: flex; gap: 10px;">
+                    <input type="text" id="searchInput" placeholder="搜索书名、作者..." style="padding: 10px; border: 1px solid #ddd; border-radius: 6px; width: 300px;">
+                    <button class="btn-submit" onclick="loadBooks()">搜索</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>编号</th>
+                            <th>书名</th>
+                            <th>作者</th>
+                            <th>出版社</th>
+                            <th>状态</th>
+                            <th>库存</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bookTableBody">
+                        <!-- JS 渲染 -->
+                    </tbody>
+                </table>
             </div>
         </div>
 
@@ -399,7 +679,9 @@
             document.getElementById('page-' + page).classList.add('active');
 
             if (page === 'profile') loadProfile();
+            if (page === 'books') loadBooks();
             if (page === 'borrows') loadBorrows();
+            if (page === 'home') initDashboard();
         }
 
         // 加载个人信息
@@ -453,6 +735,90 @@
                     }
                 })
                 .catch(err => console.error('加载个人信息失败', err));
+        }
+
+        // 加载图书列表
+        let allBooks = [];
+        function loadBooks() {
+            const tbody = document.getElementById('bookTableBody');
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#999;padding:40px;">加载中...</td></tr>';
+            
+            fetch('/api/books')
+                .then(r => r.json())
+                .then(books => {
+                    allBooks = books;
+                    renderBooks();
+                })
+                .catch(err => {
+                    console.error('加载图书失败', err);
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:red;padding:40px;">加载失败</td></tr>';
+                });
+        }
+
+        function renderBooks() {
+            const tbody = document.getElementById('bookTableBody');
+            const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
+            
+            const filteredBooks = allBooks.filter(b => {
+                if (!keyword) return true;
+                return (b.bookName && b.bookName.toLowerCase().includes(keyword)) ||
+                       (b.author && b.author.toLowerCase().includes(keyword));
+            });
+
+            if (filteredBooks.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="empty-state">未找到相关图书</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = '';
+            filteredBooks.forEach(b => {
+                const tr = document.createElement('tr');
+                
+                let statusHtml = '';
+                let actionHtml = '';
+                if (b.borrowStatus === '借阅中' || b.stock <= 0) {
+                    statusHtml = '<span style="color: #e6a23c;">不可借阅</span>';
+                    actionHtml = '<button class="btn-cancel" disabled style="padding: 5px 10px;">借阅</button>';
+                } else {
+                    statusHtml = '<span style="color: #67c23a;">可借阅</span>';
+                    actionHtml = `<button class="btn-submit" style="padding: 5px 10px;" onclick="borrowBook(${b.id})">借阅</button>`;
+                }
+
+                tr.innerHTML = `
+                    <td>${b.id}</td>
+                    <td><strong>${b.bookName}</strong></td>
+                    <td>${b.author || '-'}</td>
+                    <td>${b.publishHouse || '-'}</td>
+                    <td>${statusHtml}</td>
+                    <td>${b.stock}</td>
+                    <td>${actionHtml}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // 借阅图书
+        function borrowBook(bookId) {
+            if (!confirm('确定要借阅这本图书吗？')) return;
+            
+            fetch('/api/borrows/borrow', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ bookId: bookId })
+            })
+            .then(r => r.json())
+            .then(res => {
+                if (res.success) {
+                    alert('借阅成功');
+                    loadBooks(); // 重新加载图书列表更新状态
+                } else {
+                    alert('借阅失败: ' + (res.message || ''));
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('借阅失败，网络错误');
+            });
         }
 
         // 加载我的借阅
@@ -565,6 +931,149 @@
             fetch('/api/auth/logout', { method: 'POST' })
                 .then(() => location.replace('/'))
                 .catch(() => location.replace('/'));
+        }
+
+        // 初始化大屏
+        let dashboardInitialized = false;
+        let chartTrend, chartGender, chartTop;
+        function initDashboard() {
+            // 更新时间
+            setInterval(() => {
+                const now = new Date();
+                document.getElementById('dashTime').textContent = now.toLocaleString('zh-CN', {
+                    year: 'numeric', month: '2-digit', day: '2-digit',
+                    hour: '2-digit', minute: '2-digit', second: '2-digit'
+                });
+            }, 1000);
+
+            if (!dashboardInitialized) {
+                chartTrend = echarts.init(document.getElementById('chartTrend'));
+                chartGender = echarts.init(document.getElementById('chartGender'));
+                chartTop = echarts.init(document.getElementById('chartTop'));
+                dashboardInitialized = true;
+                
+                // 窗口调整大小时重新布局
+                window.addEventListener('resize', () => {
+                    chartTrend.resize();
+                    chartGender.resize();
+                    chartTop.resize();
+                });
+            }
+
+            fetchDashboardData();
+            // 定时刷新数据
+            setInterval(fetchDashboardData, 30000);
+        }
+
+        function fetchDashboardData() {
+            // 获取今日指标
+            fetch('/api/dashboard/metrics')
+                .then(r => r.json())
+                .then(data => {
+                    document.getElementById('valTodayBorrows').textContent = data.todayBorrows;
+                    document.getElementById('valTodayVisitors').textContent = data.todayVisitors;
+                    document.getElementById('valTodayNewReaders').textContent = data.todayNewReaders;
+                });
+                
+            // 获取实时借阅动态
+            fetch('/api/dashboard/realtime-borrows')
+                .then(r => r.json())
+                .then(data => {
+                    const listInner = document.getElementById('realtimeList');
+                    listInner.innerHTML = data.map(item => `
+                        <div class="realtime-item">
+                            <div style="width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                                <span class="user">${item.userName}</span> 借阅了
+                            </div>
+                            <div style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin:0 10px;">
+                                <span class="book">《${item.bookName}》</span>
+                            </div>
+                            <div class="time">${item.time}</div>
+                        </div>
+                    `).join('');
+                });
+                
+            // 获取Top 10并在获取后渲染图表
+            fetch('/api/dashboard/top-books')
+                .then(r => r.json())
+                .then(data => {
+                    renderCharts(data);
+                });
+        }
+        
+        function renderCharts(topData) {
+            // 近7日趋势 (模拟数据)
+            const trendOption = {
+                tooltip: { trigger: 'axis' },
+                grid: { left: '10%', right: '5%', bottom: '15%', top: '10%' },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+                    axisLabel: { color: '#888' },
+                    axisLine: { lineStyle: { color: 'rgba(255,255,255,0.1)' } }
+                },
+                yAxis: {
+                    type: 'value',
+                    axisLabel: { color: '#888' },
+                    splitLine: { lineStyle: { color: 'rgba(255,255,255,0.05)' } }
+                },
+                series: [{
+                    data: [820, 932, 1301, 1434, 1290, 1030, 990],
+                    type: 'line',
+                    smooth: true,
+                    itemStyle: { color: '#00ffff' },
+                    areaStyle: {
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                            { offset: 0, color: 'rgba(0, 255, 255, 0.5)' },
+                            { offset: 1, color: 'rgba(0, 255, 255, 0)' }
+                        ])
+                    }
+                }]
+            };
+            chartTrend.setOption(trendOption);
+            
+            // 区域性别分布 (模拟数据)
+            const genderOption = {
+                tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+                legend: { data: ['男', '女'], textStyle: { color: '#fff' } },
+                grid: { left: '15%', right: '5%', bottom: '15%', top: '15%' },
+                xAxis: {
+                    type: 'category',
+                    data: ['自习区', '社科区', '电子阅览室'],
+                    axisLabel: { color: '#888' }
+                },
+                yAxis: { type: 'value', splitLine: { lineStyle: { color: 'rgba(255,255,255,0.05)' } }, axisLabel: { color: '#888' } },
+                series: [
+                    { name: '男', type: 'bar', barWidth: 15, itemStyle: { color: '#0ea5e9' }, data: [110, 42, 70] },
+                    { name: '女', type: 'bar', barWidth: 15, itemStyle: { color: '#7c3aed' }, data: [90, 56, 28] }
+                ]
+            };
+            chartGender.setOption(genderOption);
+            
+            // Top 10
+            const bookNames = topData.map(d => d.name);
+            const bookCounts = topData.map(d => d.count);
+            const topOption = {
+                tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+                grid: { left: '30%', right: '10%', bottom: '5%', top: '5%' },
+                xAxis: { type: 'value', splitLine: { show: false }, axisLabel: { show: false } },
+                yAxis: { type: 'category', data: bookNames, axisLabel: { color: '#fff' }, axisLine: { show: false }, axisTick: { show: false } },
+                series: [{
+                    type: 'bar',
+                    data: bookCounts,
+                    barWidth: 10,
+                    itemStyle: {
+                        color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [
+                            { offset: 0, color: '#0ea5e9' },
+                            { offset: 1, color: '#00ffff' }
+                        ]),
+                        borderRadius: 5
+                    },
+                    label: { show: true, position: 'right', color: '#00ffff' }
+                }]
+            };
+            chartTop.setOption(topOption);
         }
 
         // 跳转管理员登录

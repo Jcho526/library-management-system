@@ -9,6 +9,7 @@ com\example\library\mapper\UserMapper.class
 com\example\library\service\impl\UserServiceImpl.class
 com\example\library\entity\Category.class
 com\example\library\controller\CategoryController.class
+com\example\library\controller\DashboardController.class
 com\example\library\service\impl\BorrowRecordServiceImpl.class
 com\example\library\mapper\CategoryMapper.class
 com\example\library\mapper\BorrowRecordMapper.class
