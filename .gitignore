@@ -43,6 +43,9 @@ application-local.properties
 .claude/
 .agent/
 
+# Docker
+docker-compose.override.yml
+
 # Temp
 *.tmp
 *.bak

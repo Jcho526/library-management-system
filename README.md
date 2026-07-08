@@ -65,6 +65,72 @@ source .env && mvn spring-boot:run
 | 管理员 | `admin` | `admin123` |
 | 读者 | `reader` | `reader123` |
 
+## Docker 部署（推荐）
+
+本地开发可以不用 Docker，直接 `mvn spring-boot:run` 就行。部署到云服务器用 Docker 最方便。
+
+### 本地构建
+
+```bash
+# 构建并启动（MySQL + 应用一起）
+docker compose up -d --build
+```
+
+首次启动会自动执行 `database/library_db.sql` 初始化数据库。访问 http://localhost:8080。
+
+### 部署到云服务器
+
+```bash
+# 1. 在服务器上装好 Docker 和 Docker Compose
+
+# 2. 把项目传上去（只传源码，不用传 target）
+scp -r . user@你的服务器IP:/opt/library-management/
+
+# 3. SSH 到服务器
+ssh user@你的服务器IP
+
+# 4. 进入项目目录
+cd /opt/library-management
+
+# 5. 设置环境变量（密码和 API Key）
+export DB_PASSWORD=你的数据库密码
+export DEEPSEEK_API_KEY=你的AI_Key   # 不用 AI 可跳过
+
+# 6. 构建并启动
+docker compose up -d --build
+
+# 7. 查看日志确认启动成功
+docker compose logs -f app
+```
+
+启动后访问 `http://服务器IP:8080`。
+
+### 常用命令
+
+```bash
+docker compose up -d          # 后台启动
+docker compose down           # 停止并删除容器
+docker compose restart app    # 重启应用
+docker compose logs -f app    # 查看应用日志
+docker compose ps             # 查看运行状态
+```
+
+### 环境变量
+
+启动时通过 `export` 或写 `.env` 文件传入：
+
+| 变量 | 说明 | 默认值 |
+|------|------|--------|
+| `DB_PASSWORD` | MySQL root 密码 | `library123` |
+| `DEEPSEEK_API_KEY` | DeepSeek API Key | 空（不启用 AI） |
+
+```bash
+# 或者用 .env 文件
+echo 'DB_PASSWORD=我的密码' > .env
+echo 'DEEPSEEK_API_KEY=sk-xxx' >> .env
+docker compose up -d --build
+```
+
 ## 项目结构
 
 ```
