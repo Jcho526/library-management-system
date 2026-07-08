@@ -633,11 +633,66 @@
                     <textarea id="bookSummary" rows="3" placeholder="图书内容摘要（可手动输入或AI生成）"
                               style="width:100%;padding:10px 12px;border:1.5px solid #e0e0e0;border-radius:6px;font-size:14px;resize:vertical;font-family:inherit;"></textarea>
                 </div>
+                <div class="form-group">
+                    <label for="coverUrl">图书封面</label>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                        <input type="text" id="coverUrl" placeholder="图片URL（手动输入或上传后自动填入）" style="flex:1;">
+                        <label for="coverFileInput" style="padding:8px 16px;background:linear-gradient(135deg,#7c3aed,#0ea5e9);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;">
+                            📷 上传封面
+                        </label>
+                        <input type="file" id="coverFileInput" accept="image/png,image/jpeg,image/gif,image/webp"
+                               onchange="uploadCoverFile(this)" style="display:none;">
+                    </div>
+                    <div id="coverPreview" style="margin-top:8px;display:none;">
+                        <img src="" alt="封面预览" style="max-width:120px;max-height:160px;border-radius:6px;border:1px solid #e0e0e0;">
+                        <span onclick="clearCoverPreview()" style="cursor:pointer;color:#e74c3c;font-size:12px;margin-left:8px;">✕ 清除</span>
+                    </div>
+                </div>
                 <div class="form-actions">
                     <button type="button" class="btn-cancel" onclick="closeModal()">取消</button>
                     <button type="submit" class="btn-submit">提交</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- ── 图书详情弹窗 ── -->
+    <div id="bookDetailModal" class="modal">
+        <div class="modal-content" style="max-width:700px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                <h2 style="margin:0;">📖 图书详情</h2>
+                <span onclick="closeBookDetail()" style="font-size:24px;cursor:pointer;color:#999;">&times;</span>
+            </div>
+            <div style="display:flex;gap:24px;">
+                <div id="detailCoverBox" style="width:200px;min-height:260px;border-radius:8px;overflow:hidden;background:#f0f1f5;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <div style="display:flex;flex-direction:column;align-items:center;color:#bbb;font-size:56px;">
+                        <span>📖</span>
+                        <span style="font-size:12px;margin-top:6px;color:#999;">暂无封面</span>
+                    </div>
+                </div>
+                <div style="flex:1;display:flex;flex-direction:column;gap:10px;">
+                    <h3 id="detailBkName" style="font-size:20px;margin:0;color:#1a1a2e;">---</h3>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px 20px;font-size:14px;">
+                        <div><span style="color:#999;">作者：</span><span id="detailBkAuthor">---</span></div>
+                        <div><span style="color:#999;">ISBN：</span><span id="detailBkIsbn" style="font-size:12px;">---</span></div>
+                        <div><span style="color:#999;">出版社：</span><span id="detailBkPublisher">---</span></div>
+                        <div><span style="color:#999;">价格：</span><span id="detailBkPrice">---</span></div>
+                        <div><span style="color:#999;">库存：</span><span id="detailBkStock">---</span></div>
+                        <div><span style="color:#999;">状态：</span><span id="detailBkStatus">---</span></div>
+                        <div><span style="color:#999;">分类：</span><span id="detailBkCategory">---</span></div>
+                        <div><span style="color:#999;">创建时间：</span><span id="detailBkTime" style="font-size:12px;">---</span></div>
+                    </div>
+                    <div id="detailBkSummaryBox" style="display:none;background:#f8f9fc;border-radius:6px;padding:12px 16px;margin-top:4px;font-size:13px;line-height:1.7;color:#555;">
+                        <div style="font-weight:600;color:#333;margin-bottom:4px;font-size:12px;">📝 内容摘要</div>
+                        <div id="detailBkSummary"></div>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top:20px;display:flex;gap:10px;justify-content:flex-end;border-top:1px solid #f0f0f0;padding-top:16px;">
+                <button class="btn btn-edit" onclick="editFromDetail()">✏️ 编辑</button>
+                <button class="btn btn-delete" onclick="deleteFromDetail()">🗑 删除</button>
+                <button class="btn-cancel" onclick="closeBookDetail()">关闭</button>
+            </div>
         </div>
     </div>
 
@@ -649,6 +704,7 @@
         let allCategories = [];   // 缓存所有分类
         let currentPage  = 'all';
         let activeCategoryId = null;
+        let currentBookData = []; // 缓存当前页图书数据供详情弹窗使用
 
         /* ── Auth check ── */
         (function checkAuth() {
@@ -748,6 +804,7 @@
             fetch(API_BOOKS)
                 .then(r => r.json())
                 .then(data => {
+                    currentBookData = data;
                     renderBookTable(data, 'bookTableBody', true);
                     updateStats(data);
                 })
@@ -791,7 +848,7 @@
 
             fetch(`${API_CATEGORIES}/${categoryId}/books`)
                 .then(r => r.json())
-                .then(data => renderBookTable(data, 'categoryBookTableBody', false))
+                .then(data => { currentBookData = data; renderBookTable(data, 'categoryBookTableBody', false); })
                 .catch(err => console.error('加载分类图书失败', err));
         }
 
@@ -825,7 +882,7 @@
                     : '';
                 row.innerHTML = `
                     <td>${book.id}</td>
-                    <td><strong>${book.bookName}</strong></td>
+                    <td><a href="#" onclick="openBookDetail(${book.id});return false;" style="color:#409eff;cursor:pointer;text-decoration:none;font-weight:500;" title="查看详情">${book.bookName}</a></td>
                     <td>${book.author}</td>
                     <td style="color:#888;font-size:12px;">${book.isbn}</td>
                     <td>${book.publishHouse}</td>
@@ -1024,6 +1081,7 @@
             document.getElementById('modalTitle').textContent = '添加图书';
             document.getElementById('bookForm').reset();
             document.getElementById('bookId').value = '';
+            document.getElementById('coverPreview').style.display = 'none';
             document.getElementById('message').style.display = 'none';
             document.getElementById('bookModal').style.display = 'flex';
         }
@@ -1042,6 +1100,12 @@
                     document.getElementById('stock').value = book.stock;
                     document.getElementById('categoryId').value = book.categoryId || '';
                     document.getElementById('bookSummary').value = book.summary || '';
+                    document.getElementById('coverUrl').value = book.coverUrl || '';
+                    if (book.coverUrl) {
+                        showCoverPreview(book.coverUrl);
+                    } else {
+                        document.getElementById('coverPreview').style.display = 'none';
+                    }
                     document.getElementById('message').style.display = 'none';
                     document.getElementById('bookModal').style.display = 'flex';
                 })
@@ -1071,7 +1135,8 @@
                 price:        parseFloat(document.getElementById('price').value),
                 stock:        parseInt(document.getElementById('stock').value),
                 categoryId:   catVal ? parseInt(catVal) : null,
-                summary:      document.getElementById('bookSummary').value
+                summary:      document.getElementById('bookSummary').value,
+                coverUrl:     document.getElementById('coverUrl').value
             };
 
             let url = API_BOOKS, method = 'POST';
@@ -1170,6 +1235,129 @@
             });
         }
 
+        /* ── 封面上传 ── */
+        function uploadCoverFile(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const urlInput = document.getElementById('coverUrl');
+            urlInput.value = '上传中...';
+
+            fetch('/api/upload/cover', {
+                method: 'POST',
+                body: formData
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    urlInput.value = data.url;
+                    showCoverPreview(data.url);
+                } else {
+                    alert('上传失败：' + (data.message || '未知错误'));
+                    urlInput.value = '';
+                }
+            })
+            .catch(err => {
+                alert('上传失败，请检查网络');
+                urlInput.value = '';
+            });
+        }
+
+        function showCoverPreview(url) {
+            const preview = document.getElementById('coverPreview');
+            const img = preview.querySelector('img');
+            img.src = url;
+            preview.style.display = 'block';
+        }
+
+        function clearCoverPreview() {
+            document.getElementById('coverUrl').value = '';
+            document.getElementById('coverPreview').style.display = 'none';
+            document.getElementById('coverFileInput').value = '';
+        }
+
+        /* ── 图书详情弹窗 ── */
+        let currentDetailBookId = null;
+
+        function openBookDetail(id) {
+            currentDetailBookId = id;
+            // 从已缓存的数据中找到对应图书
+            const book = currentPage === 'all'
+                ? (currentBookData || []).find(b => b.id === id)
+                : (currentBookData || []).find(b => b.id === id);
+
+            if (!book) {
+                alert('未找到该图书信息');
+                return;
+            }
+
+            // 封面
+            const coverBox = document.getElementById('detailCoverBox');
+            if (book.coverUrl) {
+                coverBox.innerHTML = `<img src="${book.coverUrl}" alt="${book.bookName}" style="width:100%;height:100%;object-fit:cover;" onerror="this.onerror=null;this.parentNode.innerHTML='<div style=display:flex;flex-direction:column;align-items:center;color:#bbb;font-size:56px;><span>📖</span><span style=font-size:12px;margin-top:6px;color:#999;>封面加载失败</span></div>';">`;
+            } else {
+                coverBox.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;color:#bbb;font-size:56px;"><span>📖</span><span style="font-size:12px;margin-top:6px;color:#999;">暂无封面</span></div>';
+            }
+
+            document.getElementById('detailBkName').textContent = book.bookName || '---';
+            document.getElementById('detailBkAuthor').textContent = book.author || '---';
+            document.getElementById('detailBkIsbn').textContent = book.isbn || '---';
+            document.getElementById('detailBkPublisher').textContent = book.publishHouse || '---';
+            document.getElementById('detailBkPrice').textContent = book.price ? '¥' + book.price : '---';
+            document.getElementById('detailBkStock').textContent = book.stock != null ? book.stock : '---';
+            document.getElementById('detailBkCategory').textContent = getCategoryName(book.categoryId);
+            document.getElementById('detailBkTime').textContent = formatDateTime(book.createTime);
+
+            // 状态
+            const isAvailable = book.borrowStatus !== '借阅中' && book.stock > 0;
+            document.getElementById('detailBkStatus').innerHTML = isAvailable
+                ? '<span style="color:#388e3c;">✓ 可借阅</span>'
+                : '<span style="color:#e65100;">不可借阅</span>';
+
+            // 摘要
+            const summaryBox = document.getElementById('detailBkSummaryBox');
+            if (book.summary) {
+                summaryBox.style.display = 'block';
+                document.getElementById('detailBkSummary').textContent = book.summary;
+            } else {
+                summaryBox.style.display = 'none';
+            }
+
+            document.getElementById('bookDetailModal').style.display = 'flex';
+        }
+
+        function closeBookDetail() {
+            document.getElementById('bookDetailModal').style.display = 'none';
+            currentDetailBookId = null;
+        }
+
+        function editFromDetail() {
+            const id = currentDetailBookId;
+            closeBookDetail();
+            if (id) openEditModal(id);
+        }
+
+        function deleteFromDetail() {
+            const id = currentDetailBookId;
+            if (!id) return;
+            if (!confirm('确定要删除这本图书吗？')) return;
+            fetch(`${API_BOOKS}/${id}`, { method: 'DELETE' })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        closeBookDetail();
+                        if (currentPage === 'all') loadAllBooks();
+                        else if (activeCategoryId) loadCategoryPage();
+                    } else {
+                        alert(data.message || '删除失败');
+                    }
+                })
+                .catch(() => alert('删除失败'));
+        }
+
         function formatDateTime(dateTime) {
             if (!dateTime) return '';
             const date = new Date(dateTime);
@@ -1182,6 +1370,7 @@
         window.onclick = function(event) {
             if (event.target === document.getElementById('bookModal')) closeModal();
             if (event.target === document.getElementById('borrowModal')) closeBorrowModal();
+            if (event.target === document.getElementById('bookDetailModal')) closeBookDetail();
         };
     </script>
 </body>

@@ -15,6 +15,7 @@
         <result property="createTime" column="create_time"/>
         <result property="updateTime" column="update_time"/>
         <result property="summary" column="summary"/>
+        <result property="coverUrl" column="cover_url"/>
         <!-- 借阅状态：联表查询 -->
         <result property="borrowStatus" column="borrow_status"/>
     </resultMap>
@@ -32,7 +33,8 @@
 
     <select id="findAll" resultMap="BookResultMap">
         SELECT b.id, b.book_name, b.author, b.isbn, b.publish_house,
-               b.price, b.stock, b.category_id, b.summary, b.create_time, b.update_time,
+               b.price, b.stock, b.category_id, b.summary, b.cover_url,
+               b.create_time, b.update_time,
                <include refid="borrowStatusExpr"/>
         FROM t_book b
         ORDER BY b.id ASC
@@ -40,7 +42,8 @@
 
     <select id="findById" parameterType="java.lang.Long" resultMap="BookResultMap">
         SELECT b.id, b.book_name, b.author, b.isbn, b.publish_house,
-               b.price, b.stock, b.category_id, b.summary, b.create_time, b.update_time,
+               b.price, b.stock, b.category_id, b.summary, b.cover_url,
+               b.create_time, b.update_time,
                <include refid="borrowStatusExpr"/>
         FROM t_book b
         WHERE b.id = #{id}
@@ -48,7 +51,8 @@
 
     <select id="findByCategoryId" parameterType="java.lang.Long" resultMap="BookResultMap">
         SELECT b.id, b.book_name, b.author, b.isbn, b.publish_house,
-               b.price, b.stock, b.category_id, b.summary, b.create_time, b.update_time,
+               b.price, b.stock, b.category_id, b.summary, b.cover_url,
+               b.create_time, b.update_time,
                <include refid="borrowStatusExpr"/>
         FROM t_book b
         WHERE b.category_id = #{categoryId}
@@ -56,8 +60,8 @@
     </select>
 
     <insert id="insert" parameterType="com.example.library.entity.Book">
-        INSERT INTO t_book (book_name, author, isbn, publish_house, price, stock, category_id, summary, create_time, update_time)
-        VALUES (#{bookName}, #{author}, #{isbn}, #{publishHouse}, #{price}, #{stock}, #{categoryId}, #{summary}, NOW(), NOW())
+        INSERT INTO t_book (book_name, author, isbn, publish_house, price, stock, category_id, summary, cover_url, create_time, update_time)
+        VALUES (#{bookName}, #{author}, #{isbn}, #{publishHouse}, #{price}, #{stock}, #{categoryId}, #{summary}, #{coverUrl}, NOW(), NOW())
     </insert>
 
     <update id="update" parameterType="com.example.library.entity.Book">
@@ -70,6 +74,7 @@
             stock = #{stock},
             category_id = #{categoryId},
             summary = #{summary},
+            cover_url = #{coverUrl},
             update_time = NOW()
         WHERE id = #{id}
     </update>

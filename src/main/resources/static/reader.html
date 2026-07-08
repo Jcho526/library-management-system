@@ -439,6 +439,63 @@
             from { opacity: 0; transform: translateY(6px); }
             to   { opacity: 1; transform: translateY(0); }
         }
+
+        /* ── 图书详情页 ── */
+        .page-book-detail {
+            padding: 20px 0;
+        }
+        .detail-back {
+            display: inline-flex; align-items: center; gap: 6px; color: #409eff; cursor: pointer;
+            font-size: 14px; margin-bottom: 20px; text-decoration: none;
+        }
+        .detail-back:hover { color: #337ecc; }
+        .detail-card {
+            display: flex; gap: 30px; background: #fff; border-radius: 12px;
+            padding: 30px; box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+        .detail-cover {
+            width: 260px; min-height: 360px; border-radius: 8px; overflow: hidden;
+            background: #f0f1f5; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .detail-cover img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+        .detail-cover-placeholder {
+            display: flex; flex-direction: column; align-items: center; color: #bbb;
+            font-size: 64px;
+        }
+        .detail-cover-placeholder span {
+            font-size: 14px; margin-top: 8px; color: #999;
+        }
+        .detail-info { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+        .detail-info h1 { font-size: 24px; margin: 0 0 4px 0; color: #1a1a2e; }
+        .detail-info .meta-row { display: flex; gap: 30px; flex-wrap: wrap; }
+        .detail-info .meta-item { display: flex; flex-direction: column; gap: 4px; }
+        .detail-info .meta-label { font-size: 12px; color: #999; }
+        .detail-info .meta-value { font-size: 15px; color: #333; font-weight: 500; }
+        .detail-summary {
+            background: #f8f9fc; border-radius: 8px; padding: 16px 20px; margin-top: 8px;
+            font-size: 14px; line-height: 1.8; color: #555;
+        }
+        .detail-summary .summary-title { font-weight: 600; color: #333; margin-bottom: 6px; font-size: 13px; }
+        .detail-actions { margin-top: auto; padding-top: 16px; display: flex; gap: 12px; }
+        .detail-btn-borrow {
+            padding: 10px 28px; border: none; border-radius: 6px; cursor: pointer;
+            font-size: 15px; color: #fff; background: linear-gradient(135deg, #409eff, #5a8ef0);
+            font-weight: 500;
+        }
+        .detail-btn-borrow:hover { opacity: 0.88; }
+        .detail-btn-borrow:disabled { background: #ccc; cursor: not-allowed; }
+        .detail-badge {
+            display: inline-block; padding: 3px 10px; border-radius: 4px; font-size: 12px; font-weight: 500;
+        }
+        .badge-available { background: #e8f5e9; color: #388e3c; }
+        .badge-unavailable { background: #fff3e0; color: #e65100; }
+
+        @media (max-width: 768px) {
+            .detail-card { flex-direction: column; }
+            .detail-cover { width: 100%; min-height: 280px; }
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
 </head>
@@ -624,6 +681,61 @@
             </div>
         </div>
 
+        <!-- 页面：图书详情 -->
+        <div class="page" id="page-book-detail">
+            <div class="page-book-detail">
+                <a class="detail-back" onclick="goBackToBooks()">← 返回图书列表</a>
+                <div class="detail-card">
+                    <div class="detail-cover" id="detailCover">
+                        <div class="detail-cover-placeholder">
+                            <span>📖</span>
+                            <span>暂无封面</span>
+                        </div>
+                    </div>
+                    <div class="detail-info">
+                        <h1 id="detailName">---</h1>
+                        <div class="meta-row">
+                            <div class="meta-item">
+                                <span class="meta-label">作者</span>
+                                <span class="meta-value" id="detailAuthor">---</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">出版社</span>
+                                <span class="meta-value" id="detailPublisher">---</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">ISBN</span>
+                                <span class="meta-value" id="detailIsbn">---</span>
+                            </div>
+                        </div>
+                        <div class="meta-row" style="margin-top: 4px;">
+                            <div class="meta-item">
+                                <span class="meta-label">价格</span>
+                                <span class="meta-value" id="detailPrice">---</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">库存</span>
+                                <span class="meta-value" id="detailStock">---</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">状态</span>
+                                <span id="detailStatus">---</span>
+                            </div>
+                        </div>
+                        <div class="detail-summary" id="detailSummaryBox" style="display:none;">
+                            <div class="summary-title">📝 内容摘要</div>
+                            <div id="detailSummary">---</div>
+                        </div>
+                        <div class="detail-actions">
+                            <button class="detail-btn-borrow" id="detailBorrowBtn" onclick="borrowFromDetail()">
+                                立即借阅
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- 页面：我的借阅 -->
         <div class="page" id="page-borrows">
             <h2 class="page-title">我的借阅记录</h2>
@@ -728,14 +840,16 @@
         function switchPage(page) {
             document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
-            
-            document.getElementById('nav-' + page).classList.add('active');
+
+            const navEl = document.getElementById('nav-' + page);
+            if (navEl) navEl.classList.add('active');
             document.getElementById('page-' + page).classList.add('active');
 
             if (page === 'profile') loadProfile();
             if (page === 'books') loadBooks();
             if (page === 'borrows') loadBorrows();
             if (page === 'home') initDashboard();
+            // book-detail: no special init needed (data set by showBookDetail)
         }
 
         // 加载个人信息
@@ -840,7 +954,7 @@
 
                 tr.innerHTML = `
                     <td>${b.id}</td>
-                    <td><strong>${b.bookName}</strong></td>
+                    <td><a href="#" onclick="showBookDetail(${b.id});return false;" style="color:#409eff;cursor:pointer;text-decoration:none;font-weight:500;">${b.bookName}</a></td>
                     <td>${b.author || '-'}</td>
                     <td>${b.publishHouse || '-'}</td>
                     <td>${statusHtml}</td>
@@ -873,6 +987,64 @@
                 console.error(err);
                 alert('借阅失败，网络错误');
             });
+        }
+
+        /* ── 图书详情页 ── */
+        let currentDetailBookId = null;
+
+        function showBookDetail(id) {
+            currentDetailBookId = id;
+            const book = allBooks.find(b => b.id === id);
+            if (!book) {
+                alert('未找到该图书信息');
+                return;
+            }
+            const coverDiv = document.getElementById('detailCover');
+            if (book.coverUrl) {
+                coverDiv.innerHTML = `<img src="${book.coverUrl}" alt="${book.bookName}" onerror="this.onerror=null;this.parentNode.innerHTML='<div class=\'detail-cover-placeholder\'><span>📖</span><span>封面加载失败</span></div>';">`;
+            } else {
+                coverDiv.innerHTML = '<div class="detail-cover-placeholder"><span>📖</span><span>暂无封面</span></div>';
+            }
+            document.getElementById('detailName').textContent = book.bookName;
+            document.getElementById('detailAuthor').textContent = book.author || '---';
+            document.getElementById('detailPublisher').textContent = book.publishHouse || '---';
+            document.getElementById('detailIsbn').textContent = book.isbn || '---';
+            document.getElementById('detailPrice').textContent = book.price ? '¥' + book.price : '---';
+            document.getElementById('detailStock').textContent = book.stock != null ? book.stock : '---';
+
+            const isAvailable = book.borrowStatus !== '借阅中' && book.stock > 0;
+            document.getElementById('detailStatus').innerHTML = isAvailable
+                ? '<span class="detail-badge badge-available">可借阅</span>'
+                : '<span class="detail-badge badge-unavailable">不可借阅</span>';
+
+            const summaryBox = document.getElementById('detailSummaryBox');
+            if (book.summary) {
+                summaryBox.style.display = 'block';
+                document.getElementById('detailSummary').textContent = book.summary;
+            } else {
+                summaryBox.style.display = 'none';
+            }
+
+            const btn = document.getElementById('detailBorrowBtn');
+            if (isAvailable) {
+                btn.disabled = false;
+                btn.textContent = '立即借阅';
+            } else {
+                btn.disabled = true;
+                btn.textContent = '暂不可借';
+            }
+
+            switchPage('book-detail');
+        }
+
+        function goBackToBooks() {
+            switchPage('books');
+        }
+
+        function borrowFromDetail() {
+            if (currentDetailBookId) {
+                borrowBook(currentDetailBookId);
+            }
         }
 
         // 加载我的借阅

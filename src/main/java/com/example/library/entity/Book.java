@@ -19,6 +19,9 @@ public class Book {
     // AI 生成的图书摘要
     private String summary;
 
+    // 图书封面图片URL
+    private String coverUrl;
+
     // 借阅状态：在库 / 借阅中
     private String borrowStatus;
 
@@ -113,6 +116,14 @@ public class Book {
         this.summary = summary;
     }
 
+    public String getCoverUrl() {
+        return coverUrl;
+    }
+
+    public void setCoverUrl(String coverUrl) {
+        this.coverUrl = coverUrl;
+    }
+
     public String getBorrowStatus() {
         return borrowStatus;
     }
@@ -135,6 +146,7 @@ public class Book {
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 ", summary='" + summary + '\'' +
+                ", coverUrl='" + coverUrl + '\'' +
                 '}';
     }
 }
