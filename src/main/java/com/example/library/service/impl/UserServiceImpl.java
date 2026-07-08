@@ -1,6 +1,7 @@
 package com.example.library.service.impl;
 
 import com.example.library.entity.User;
+import java.util.List;
 import com.example.library.mapper.UserMapper;
 import com.example.library.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,5 +72,10 @@ public class UserServiceImpl implements UserService {
     public boolean updateReader(User user) {
         if (user == null || user.getId() == null) return false;
         return userMapper.updateReader(user) > 0;
+    }
+
+    @Override
+    public List<User> findAllReaders() {
+        return userMapper.findAllReaders();
     }
 }

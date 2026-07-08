@@ -14,18 +14,19 @@
             box-sizing: border-box;
         }
         body {
-            font-family: 'Microsoft YaHei', sans-serif;
-            background-color: #f0f2f5;
+            font-family: 'Georgia', 'Noto Serif SC', 'STSong', 'Songti SC', serif;
+            background: #f3efe8;
+            color: #2c2416;
+            min-height: 100vh;
+            margin: 0;
             display: flex;
-            height: 100vh;
-            overflow: hidden;
         }
 
         /* ── 左侧侧边栏 ── */
         .sidebar {
             width: 220px;
             min-width: 220px;
-            background: linear-gradient(180deg, #1a2342 0%, #243060 100%);
+            background: #7b4a2c;
             display: flex;
             flex-direction: column;
             box-shadow: 3px 0 12px rgba(0,0,0,0.18);
@@ -75,9 +76,9 @@
             color: #fff;
         }
         .nav-item.active {
-            background: rgba(64,158,255,0.15);
-            color: #409eff;
-            border-left-color: #409eff;
+            background: rgba(123, 74, 44, 0.15);
+            color: #7b4a2c;
+            border-left-color: #7b4a2c;
             font-weight: 600;
         }
         .nav-item .nav-icon {
@@ -98,7 +99,7 @@
         .user-avatar {
             width: 32px;
             height: 32px;
-            background: linear-gradient(135deg, #409eff, #5f8ef0);
+            background: #7b4a2c;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -132,6 +133,7 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            min-width: 0;
         }
         .topbar {
             background: #fff;
@@ -150,14 +152,14 @@
         }
         .topbar-actions button {
             padding: 8px 20px;
-            background: linear-gradient(135deg, #409eff, #5a8ef0);
+            background: #7b4a2c;
             color: #fff;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 14px;
             transition: opacity 0.25s, transform 0.2s;
-            box-shadow: 0 2px 8px rgba(64,158,255,0.3);
+            box-shadow: 0 2px 8px rgba(123, 74, 44, 0.15);
         }
         .topbar-actions button:hover {
             opacity: 0.88;
@@ -188,20 +190,20 @@
             user-select: none;
         }
         .cat-tab:hover {
-            border-color: #409eff;
-            color: #409eff;
+            border-color: #7b4a2c;
+            color: #7b4a2c;
         }
         .cat-tab.active {
-            background: linear-gradient(135deg, #409eff, #5a8ef0);
-            border-color: #409eff;
+            background: #7b4a2c;
+            border-color: #7b4a2c;
             color: #fff;
-            box-shadow: 0 2px 8px rgba(64,158,255,0.3);
+            box-shadow: 0 2px 8px rgba(123, 74, 44, 0.15);
             font-weight: 600;
         }
 
         /* ── 表格 ── */
         .table-card {
-            background: #fff;
+            background: var(--surface, #fffdf9); border: 1px solid var(--border, #d4cdbf);
             border-radius: 10px;
             box-shadow: 0 2px 12px rgba(0,0,0,0.07);
             overflow: hidden;
@@ -226,7 +228,7 @@
             border-bottom: none;
         }
         tr:hover td {
-            background-color: #f5f8ff;
+            background-color: #f8f5f0;
         }
         .tag-category {
             display: inline-block;
@@ -234,8 +236,8 @@
             border-radius: 12px;
             font-size: 12px;
             font-weight: 500;
-            background: #ecf5ff;
-            color: #409eff;
+            background: #f5f0e8;
+            color: #7b4a2c;
         }
         .btn {
             padding: 5px 12px;
@@ -275,7 +277,7 @@
             justify-content: center;
             font-size: 22px;
         }
-        .stat-icon.blue  { background: #ecf5ff; }
+        .stat-icon.blue  { background: #f5f0e8; }
         .stat-icon.green { background: #f0f9eb; }
         .stat-icon.orange{ background: #fdf6ec; }
         .stat-label { font-size: 13px; color: #888; margin-bottom: 4px; }
@@ -302,7 +304,7 @@
             z-index: 1000;
         }
         .modal-content {
-            background: #fff;
+            background: #fffdf9;
             padding: 32px;
             border-radius: 12px;
             width: 480px;
@@ -339,7 +341,7 @@
         }
         .form-group input:focus,
         .form-group select:focus {
-            outline: none; border-color: #409eff;
+            outline: none; border-color: #7b4a2c;
         }
         .form-actions { margin-top: 22px; text-align: right; }
         .form-actions button {
@@ -349,7 +351,7 @@
             transition: opacity 0.2s, transform 0.15s;
         }
         .form-actions button:hover { opacity: 0.88; transform: translateY(-1px); }
-        .btn-submit { background: linear-gradient(135deg,#409eff,#5a8ef0); color:#fff; }
+        .btn-submit { background: #7b4a2c; color:#fff; }
         .btn-cancel { background: #f0f0f0; color: #666; }
         .message {
             padding: 10px 14px; border-radius: 6px;
@@ -383,23 +385,28 @@
     <!-- 左侧侧边栏 -->
     <aside class="sidebar">
         <div class="sidebar-logo">
-            <h2>📚 图书管理系统</h2>
+            <h2>&#x2766; 图书管理系统</h2>
             <span>Library Management</span>
         </div>
         <nav class="sidebar-nav">
             <div class="nav-section-title">图书管理</div>
             <div class="nav-item active" id="nav-all" onclick="switchPage('all')">
-                <span class="nav-icon">📋</span>
+                <span class="nav-icon">&#x2261;</span>
                 <span>全部图书记录</span>
             </div>
             <div class="nav-item" id="nav-category" onclick="switchPage('category')">
-                <span class="nav-icon">🗂️</span>
+                <span class="nav-icon">&#x25A7;️</span>
                 <span>详情分类</span>
             </div>
             <div class="nav-section-title" style="margin-top:10px;">借阅管理</div>
             <div class="nav-item" id="nav-borrow" onclick="switchPage('borrow')">
-                <span class="nav-icon">📖</span>
+                <span class="nav-icon">&#x25C6;</span>
                 <span>图书借阅记录</span>
+            </div>
+            <div class="nav-section-title" style="margin-top:10px;">用户管理</div>
+            <div class="nav-item" id="nav-users" onclick="switchPage('users')">
+                <span class="nav-icon">&#x25CB;</span>
+                <span>读者管理</span>
             </div>
         </nav>
         <div class="sidebar-footer">
@@ -429,21 +436,21 @@
                 <!-- 统计卡片 -->
                 <div class="stats-row">
                     <div class="stat-card">
-                        <div class="stat-icon blue">📚</div>
+                        <div class="stat-icon blue">&#x2766;</div>
                         <div>
                             <div class="stat-label">图书总数</div>
                             <div class="stat-value" id="stat-total">—</div>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon green">🏷️</div>
+                        <div class="stat-icon green">&#x204E;️</div>
                         <div>
                             <div class="stat-label">分类数量</div>
                             <div class="stat-value" id="stat-categories">—</div>
                         </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-icon orange">📦</div>
+                        <div class="stat-icon orange">&#x25A3;</div>
                         <div>
                             <div class="stat-label">总库存</div>
                             <div class="stat-value" id="stat-stock">—</div>
@@ -539,6 +546,29 @@
                 </div>
             </div>
 
+            <!-- 页面：用户管理 -->
+            <div class="page" id="page-users">
+                <div class="table-card" style="padding:20px;">
+                    <div style="margin-bottom:16px;font-size:15px;font-weight:600;color:#555;">读者列表</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>用户名</th>
+                                <th>姓名</th>
+                                <th>性别</th>
+                                <th>邮箱</th>
+                                <th>手机号</th>
+                                <th>借阅额度</th>
+                                <th>注册时间</th>
+                                <th>借阅情况</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -626,8 +656,8 @@
                 <div class="form-group">
                     <label for="bookSummary">图书摘要
                         <button type="button" onclick="generateSummary()"
-                                style="margin-left:10px;padding:4px 12px;background:linear-gradient(135deg,#7c3aed,#0ea5e9);color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:12px;">
-                            🔮 一键生成摘要
+                                style="margin-left:10px;padding:4px 12px;background: #7b4a2c;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:12px;">
+                            &#x2726; 一键生成摘要
                         </button>
                     </label>
                     <textarea id="bookSummary" rows="3" placeholder="图书内容摘要（可手动输入或AI生成）"
@@ -637,15 +667,15 @@
                     <label for="coverUrl">图书封面</label>
                     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
                         <input type="text" id="coverUrl" placeholder="图片URL（手动输入或上传后自动填入）" style="flex:1;">
-                        <label for="coverFileInput" style="padding:8px 16px;background:linear-gradient(135deg,#7c3aed,#0ea5e9);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;">
-                            📷 上传封面
+                        <label for="coverFileInput" style="padding:8px 16px;background: #7b4a2c;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;">
+                            &#x21E7; 上传封面
                         </label>
                         <input type="file" id="coverFileInput" accept="image/png,image/jpeg,image/gif,image/webp"
                                onchange="uploadCoverFile(this)" style="display:none;">
                     </div>
                     <div id="coverPreview" style="margin-top:8px;display:none;">
                         <img src="" alt="封面预览" style="max-width:120px;max-height:160px;border-radius:6px;border:1px solid #e0e0e0;">
-                        <span onclick="clearCoverPreview()" style="cursor:pointer;color:#e74c3c;font-size:12px;margin-left:8px;">✕ 清除</span>
+                        <span onclick="clearCoverPreview()" style="cursor:pointer;color:#e74c3c;font-size:12px;margin-left:8px;">&#x2717; 清除</span>
                     </div>
                 </div>
                 <div class="form-actions">
@@ -660,13 +690,13 @@
     <div id="bookDetailModal" class="modal">
         <div class="modal-content" style="max-width:700px;">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-                <h2 style="margin:0;">📖 图书详情</h2>
+                <h2 style="margin:0;">&#x25C6; 图书详情</h2>
                 <span onclick="closeBookDetail()" style="font-size:24px;cursor:pointer;color:#999;">&times;</span>
             </div>
             <div style="display:flex;gap:24px;">
                 <div id="detailCoverBox" style="width:200px;min-height:260px;border-radius:8px;overflow:hidden;background:#f0f1f5;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                     <div style="display:flex;flex-direction:column;align-items:center;color:#bbb;font-size:56px;">
-                        <span>📖</span>
+                        <span>&#x25C6;</span>
                         <span style="font-size:12px;margin-top:6px;color:#999;">暂无封面</span>
                     </div>
                 </div>
@@ -683,14 +713,14 @@
                         <div><span style="color:#999;">创建时间：</span><span id="detailBkTime" style="font-size:12px;">---</span></div>
                     </div>
                     <div id="detailBkSummaryBox" style="display:none;background:#f8f9fc;border-radius:6px;padding:12px 16px;margin-top:4px;font-size:13px;line-height:1.7;color:#555;">
-                        <div style="font-weight:600;color:#333;margin-bottom:4px;font-size:12px;">📝 内容摘要</div>
+                        <div style="font-weight:600;color:#333;margin-bottom:4px;font-size:12px;">&#x223C; 内容摘要</div>
                         <div id="detailBkSummary"></div>
                     </div>
                 </div>
             </div>
             <div style="margin-top:20px;display:flex;gap:10px;justify-content:flex-end;border-top:1px solid #f0f0f0;padding-top:16px;">
-                <button class="btn btn-edit" onclick="editFromDetail()">✏️ 编辑</button>
-                <button class="btn btn-delete" onclick="deleteFromDetail()">🗑 删除</button>
+                <button class="btn btn-edit" onclick="editFromDetail()">&#x270E; 编辑</button>
+                <button class="btn btn-delete" onclick="deleteFromDetail()">&#x232B; 删除</button>
                 <button class="btn-cancel" onclick="closeBookDetail()">关闭</button>
             </div>
         </div>
@@ -759,6 +789,12 @@
                 document.getElementById('topbar-actions').innerHTML =
                     '<button onclick="openAddBorrowModal()">＋ 添加借阅</button>';
                 loadBorrowRecords();
+            } else if (page === 'users') {
+                document.getElementById('nav-users').classList.add('active');
+                document.getElementById('page-users').classList.add('active');
+                document.getElementById('page-title').textContent = '读者管理';
+                document.getElementById('topbar-actions').innerHTML = '';
+                loadUsers();
             }
         }
 
@@ -855,9 +891,9 @@
         /* ── 渲染表格 ── */
         function getBorrowStatusBadge(status) {
             if (status === '借阅中') {
-                return '<span style="display:inline-block;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#fff3e0;color:#e6a23c;border:1px solid #ffd591;">📖 借阅中</span>';
+                return '<span style="display:inline-block;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#fff3e0;color:#e6a23c;border:1px solid #ffd591;">&#x25C6; 借阅中</span>';
             }
-            return '<span style="display:inline-block;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#f0f9eb;color:#67c23a;border:1px solid #b7eb8f;">✅ 在库</span>';
+            return '<span style="display:inline-block;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600;background:#f0f9eb;color:#67c23a;border:1px solid #b7eb8f;">&#x2713; 在库</span>';
         }
 
         function renderBookTable(books, tbodyId, showCategory) {
@@ -868,7 +904,7 @@
                 const colspan = showCategory ? 11 : 10;
                 tbody.innerHTML = `<tr><td colspan="${colspan}">
                     <div class="empty-state">
-                        <div class="empty-icon">📭</div>
+                        <div class="empty-icon">&#x2205;</div>
                         <p>暂无图书记录</p>
                     </div>
                 </td></tr>`;
@@ -882,7 +918,7 @@
                     : '';
                 row.innerHTML = `
                     <td>${book.id}</td>
-                    <td><a href="#" onclick="openBookDetail(${book.id});return false;" style="color:#409eff;cursor:pointer;text-decoration:none;font-weight:500;" title="查看详情">${book.bookName}</a></td>
+                    <td><a href="#" onclick="openBookDetail(${book.id});return false;" style="color:#7b4a2c;cursor:pointer;text-decoration:none;font-weight:500;" title="查看详情">${book.bookName}</a></td>
                     <td>${book.author}</td>
                     <td style="color:#888;font-size:12px;">${book.isbn}</td>
                     <td>${book.publishHouse}</td>
@@ -907,7 +943,7 @@
             if (data.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="11">
                     <div class="empty-state">
-                        <div class="empty-icon">📭</div>
+                        <div class="empty-icon">&#x2205;</div>
                         <p>暂无借阅记录</p>
                     </div>
                 </td></tr>`;
@@ -921,7 +957,7 @@
                 else if (record.status === 2) statusHtml = '<span style="color:#f56c6c;font-weight:600;">已逾期</span>';
                 let actionHtml = '';
                 if (record.status !== 1) {
-                    actionHtml += `<button class="btn btn-edit" style="background:#409eff;" onclick="returnBook(${record.id})">归还</button>`;
+                    actionHtml += `<button class="btn btn-edit" style="background:#7b4a2c;" onclick="returnBook(${record.id})">归还</button>`;
                 }
                 actionHtml += `<button class="btn btn-delete" onclick="deleteBorrowRecord(${record.id})">删除</button>`;
                 row.innerHTML = `
@@ -939,6 +975,122 @@
                 `;
                 tbody.appendChild(row);
             });
+        }
+
+        /* ── 用户管理 ── */
+        let allUsers = [];
+        let userBorrowMap = {};
+
+        function loadUsers() {
+            const tbody = document.getElementById('userTableBody');
+            tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#999;padding:30px;">加载中...</td></tr>';
+
+            // 同时加载用户和借阅记录
+            Promise.all([
+                fetch('/api/auth/users').then(r => r.json()),
+                fetch(API_BORROWS).then(r => r.json())
+            ]).then(function(results) {
+                allUsers = results[0] || [];
+                const allBorrows = results[1] || [];
+
+                // 按用户分组借阅统计
+                userBorrowMap = {};
+                allBorrows.forEach(function(br) {
+                    if (!userBorrowMap[br.userId]) {
+                        userBorrowMap[br.userId] = { total: 0, borrowing: 0, returned: 0, records: [] };
+                    }
+                    userBorrowMap[br.userId].total++;
+                    userBorrowMap[br.userId].records.push(br);
+                    if (br.status === 0) userBorrowMap[br.userId].borrowing++;
+                    else userBorrowMap[br.userId].returned++;
+                });
+
+                renderUserTable();
+            }).catch(function(err) {
+                console.error('加载用户失败', err);
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:red;padding:30px;">加载失败</td></tr>';
+            });
+        }
+
+        function renderUserTable() {
+            var tbody = document.getElementById('userTableBody');
+            if (!allUsers || allUsers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#aaa;padding:40px;">暂无读者数据</td></tr>';
+                return;
+            }
+            tbody.innerHTML = '';
+            allUsers.forEach(function(u) {
+                var stats = userBorrowMap[u.id] || { total: 0, borrowing: 0, returned: 0 };
+                var row = document.createElement('tr');
+                row.id = 'user-row-' + u.id;
+                row.innerHTML =
+                    '<td>' + u.id + '</td>' +
+                    '<td><strong>' + (u.username || '-') + '</strong></td>' +
+                    '<td>' + (u.realName || '-') + '</td>' +
+                    '<td>' + (u.gender || '-') + '</td>' +
+                    '<td style="font-size:12px;">' + (u.email || '-') + '</td>' +
+                    '<td>' + (u.phone || '-') + '</td>' +
+                    '<td>' + (u.maxBooks || 5) + '</td>' +
+                    '<td style="font-size:12px;color:#aaa;">' + formatDateTime(u.createTime) + '</td>' +
+                    '<td>' +
+                        '<span style="color:#e6a23c;font-weight:600;">' + stats.borrowing + '</span> 在借 / ' +
+                        '<span>' + stats.total + '</span> 累计' +
+                        (stats.total > 0 ? ' <button class="btn" style="background:#7b4a2c;color:#fff;padding:3px 8px;font-size:11px;" onclick="toggleUserBorrowDetail(' + u.id + ', this)">详情</button>' : '') +
+                    '</td>';
+                tbody.appendChild(row);
+            });
+        }
+
+        function toggleUserBorrowDetail(userId, btn) {
+            // Remove existing detail row if any
+            var existing = document.getElementById('user-detail-' + userId);
+            if (existing) {
+                existing.remove();
+                if (btn) btn.textContent = '详情';
+                return;
+            }
+            // Close any other open detail
+            document.querySelectorAll('[id^="user-detail-"]').forEach(function(el) { el.remove(); });
+            document.querySelectorAll('.btn-detail-open').forEach(function(b) { b.textContent = '详情'; });
+
+            var user = allUsers.find(function(u) { return u.id === userId; });
+            var stats = userBorrowMap[userId];
+            if (!stats || stats.records.length === 0) return;
+
+            var userName = user ? (user.realName || user.username) : '用户' + userId;
+            var detailRow = document.createElement('tr');
+            detailRow.id = 'user-detail-' + userId;
+            detailRow.style.background = '#faf8f4';
+
+            var recordsHtml = stats.records.map(function(r, i) {
+                var statusClass = r.status === 0 ? 'color:#e6a23c;' : r.status === 1 ? 'color:#67c23a;' : 'color:#f56c6c;';
+                var statusText = r.status === 0 ? '借阅中' : r.status === 1 ? '已归还' : '已逾期';
+                return '<tr style="background:#fff;">' +
+                    '<td style="padding-left:30px;">' + (i + 1) + '</td>' +
+                    '<td>《' + (r.bookName || '未知') + '》</td>' +
+                    '<td style="font-size:12px;color:#888;">' + formatDateTime(r.borrowTime) + '</td>' +
+                    '<td style="font-size:12px;color:#888;">' + formatDateTime(r.dueTime) + '</td>' +
+                    '<td style="font-size:12px;color:#888;">' + (r.returnTime ? formatDateTime(r.returnTime) : '-') + '</td>' +
+                    '<td style="' + statusClass + 'font-weight:500;">' + statusText + '</td>' +
+                    '</tr>';
+            }).join('');
+
+            detailRow.innerHTML = '<td colspan="9" style="padding:0;">' +
+                '<div style="padding:12px 20px;font-weight:600;color:#555;border-bottom:1px solid #eee;">' +
+                    userName + ' 的借阅记录（共 ' + stats.total + ' 条）' +
+                '</div>' +
+                '<table style="width:100%;margin:0;">' +
+                    '<thead><tr>' +
+                        '<th style="padding-left:30px;">#</th><th>书名</th><th>借阅时间</th><th>应还时间</th><th>归还时间</th><th>状态</th>' +
+                    '</tr></thead>' +
+                    '<tbody>' + recordsHtml + '</tbody>' +
+                '</table>' +
+                '</div>';
+            detailRow.querySelector('td').style.padding = '0';
+
+            var userRow = document.getElementById('user-row-' + userId);
+            userRow.parentNode.insertBefore(detailRow, userRow.nextSibling);
+            if (btn) btn.textContent = '收起';
         }
 
         function loadBorrowRecords() {
@@ -1297,9 +1449,9 @@
             // 封面
             const coverBox = document.getElementById('detailCoverBox');
             if (book.coverUrl) {
-                coverBox.innerHTML = `<img src="${book.coverUrl}" alt="${book.bookName}" style="width:100%;height:100%;object-fit:cover;" onerror="this.onerror=null;this.parentNode.innerHTML='<div style=display:flex;flex-direction:column;align-items:center;color:#bbb;font-size:56px;><span>📖</span><span style=font-size:12px;margin-top:6px;color:#999;>封面加载失败</span></div>';">`;
+                coverBox.innerHTML = `<img src="${book.coverUrl}" alt="${book.bookName}" style="width:100%;height:100%;object-fit:cover;" onerror="this.onerror=null;this.parentNode.innerHTML='<div style=display:flex;flex-direction:column;align-items:center;color:#bbb;font-size:56px;><span>&#x25C6;</span><span style=font-size:12px;margin-top:6px;color:#999;>封面加载失败</span></div>';">`;
             } else {
-                coverBox.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;color:#bbb;font-size:56px;"><span>📖</span><span style="font-size:12px;margin-top:6px;color:#999;">暂无封面</span></div>';
+                coverBox.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;color:#bbb;font-size:56px;"><span>&#x25C6;</span><span style="font-size:12px;margin-top:6px;color:#999;">暂无封面</span></div>';
             }
 
             document.getElementById('detailBkName').textContent = book.bookName || '---';
@@ -1314,7 +1466,7 @@
             // 状态
             const isAvailable = book.borrowStatus !== '借阅中' && book.stock > 0;
             document.getElementById('detailBkStatus').innerHTML = isAvailable
-                ? '<span style="color:#388e3c;">✓ 可借阅</span>'
+                ? '<span style="color:#388e3c;">&#x2713; 可借阅</span>'
                 : '<span style="color:#e65100;">不可借阅</span>';
 
             // 摘要

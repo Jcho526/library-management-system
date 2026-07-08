@@ -35,6 +35,12 @@
         WHERE id = #{id}
     </select>
 
+    <select id="findAllReaders" resultMap="UserResultMap">
+        SELECT id, username, real_name, email, phone, max_books, status, gender, 'user' as role, create_time
+        FROM t_user
+        ORDER BY id ASC
+    </select>
+
     <insert id="insertReader" parameterType="com.example.library.entity.User">
         INSERT INTO t_user (username, password, status, create_time, update_time)
         VALUES (#{username}, #{password}, 1, NOW(), NOW())

@@ -12,397 +12,283 @@
         }
 
         :root {
-            --primary: #7c3aed;
-            --primary-light: #8b5cf6;
-            --secondary: #0ea5e9;
-            --accent: #f43f5e;
-            --success: #22c55e;
-            --danger: #ef4444;
-            --glass-bg: rgba(13, 12, 34, 0.78);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --text: #f1f5f9;
-            --text-muted: rgba(255, 255, 255, 0.38);
-            --input-bg: rgba(255, 255, 255, 0.055);
-            --input-border: rgba(255, 255, 255, 0.1);
-            --input-focus-border: rgba(124, 58, 237, 0.55);
-            --input-focus-shadow: rgba(124, 58, 237, 0.15);
+            --bg: #f3efe8;
+            --surface: #fffdf9;
+            --text: #2c2416;
+            --text-muted: #7a7060;
+            --accent: #7b4a2c;
+            --accent-hover: #5c3a1e;
+            --border: #d4cdbf;
+            --border-light: #e8e2d5;
+            --shadow: 0 1px 3px rgba(60, 40, 20, 0.06), 0 4px 24px rgba(60, 40, 20, 0.08);
+            --shadow-lg: 0 2px 8px rgba(60, 40, 20, 0.08), 0 8px 40px rgba(60, 40, 20, 0.12);
+            --success: #4a7c59;
+            --danger: #b8453a;
         }
 
         body {
-            font-family: 'Inter', 'Microsoft YaHei', 'PingFang SC', sans-serif;
+            font-family: 'Georgia', 'Noto Serif SC', 'STSong', 'SimSun', 'Songti SC', serif;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #060614;
-            overflow: hidden;
+            background: #f3efe8;
             position: relative;
         }
 
-        /* ── Animated Background ── */
-        .bg-layer {
+        /* Warm paper-texture background */
+        body::before {
+            content: '';
             position: fixed; inset: 0; z-index: 0;
-        }
-
-        /* Gradient base */
-        .bg-gradient {
-            position: absolute; inset: 0;
             background:
-                radial-gradient(ellipse 800px 600px at 15% 40%, rgba(109, 40, 217, 0.28) 0%, transparent 60%),
-                radial-gradient(ellipse 700px 500px at 85% 15%, rgba(6, 182, 212, 0.22) 0%, transparent 60%),
-                radial-gradient(ellipse 600px 500px at 65% 85%, rgba(236, 72, 153, 0.18) 0%, transparent 60%),
-                linear-gradient(160deg, #060614 0%, #0e0b2e 45%, #06101e 100%);
-        }
-
-        /* Floating orbs */
-        .orb {
-            position: absolute;
-            border-radius: 50%;
+                radial-gradient(ellipse at 30% 20%, rgba(139, 105, 60, 0.06) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 80%, rgba(139, 105, 60, 0.04) 0%, transparent 60%),
+                radial-gradient(ellipse at 50% 50%, rgba(200, 180, 150, 0.03) 0%, transparent 70%);
             pointer-events: none;
         }
-        .orb-1 {
-            width: 560px; height: 560px;
-            background: radial-gradient(circle at 35% 35%, rgba(124, 58, 237, 0.38), transparent 65%);
-            top: -180px; left: -180px;
-            animation: orbFloat 9s ease-in-out infinite;
-        }
-        .orb-2 {
-            width: 460px; height: 460px;
-            background: radial-gradient(circle at 65% 65%, rgba(14, 165, 233, 0.32), transparent 65%);
-            bottom: -140px; right: -140px;
-            animation: orbFloat 11s ease-in-out infinite reverse;
-            animation-delay: -4s;
-        }
-        .orb-3 {
-            width: 320px; height: 320px;
-            background: radial-gradient(circle at 50% 50%, rgba(244, 63, 94, 0.26), transparent 65%);
-            top: 55%; left: 55%;
-            animation: orbFloat 7s ease-in-out infinite;
-            animation-delay: -7s;
-        }
-        .orb-4 {
-            width: 200px; height: 200px;
-            background: radial-gradient(circle, rgba(34, 211, 238, 0.2), transparent 65%);
-            top: 20%; right: 20%;
-            animation: orbFloat 13s ease-in-out infinite;
-            animation-delay: -2s;
-        }
-        @keyframes orbFloat {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            25%       { transform: translate(20px, -25px) scale(1.04); }
-            50%       { transform: translate(-15px, 15px) scale(0.97); }
-            75%       { transform: translate(25px, 10px) scale(1.02); }
-        }
 
-        /* Grid overlay */
-        .grid {
-            position: absolute; inset: 0;
+        /* Subtle grid overlay — like library shelf lines */
+        body::after {
+            content: '';
+            position: fixed; inset: 0; z-index: 0;
             background-image:
-                linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
-            background-size: 48px 48px;
-        }
-
-        /* Floating book particles */
-        .particle {
-            position: absolute;
-            font-size: 20px;
-            opacity: 0;
-            animation: particleDrift linear infinite;
+                repeating-linear-gradient(0deg, transparent, transparent 80px, rgba(139, 105, 60, 0.03) 80px, rgba(139, 105, 60, 0.03) 81px),
+                repeating-linear-gradient(90deg, transparent, transparent 80px, rgba(139, 105, 60, 0.02) 80px, rgba(139, 105, 60, 0.02) 81px);
             pointer-events: none;
-            user-select: none;
-        }
-        @keyframes particleDrift {
-            0%   { opacity: 0; transform: translateY(100vh) rotate(0deg); }
-            10%  { opacity: 0.12; }
-            90%  { opacity: 0.08; }
-            100% { opacity: 0; transform: translateY(-10vh) rotate(360deg); }
         }
 
         /* ── Card ── */
         .card {
             position: relative; z-index: 10;
             width: 430px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(28px);
-            -webkit-backdrop-filter: blur(28px);
-            border: 1px solid var(--glass-border);
-            border-radius: 28px;
+            background: var(--surface);
+            border: 1px solid var(--border-light);
+            border-radius: 2px;
             padding: 48px 44px 40px;
-            box-shadow:
-                0 40px 80px rgba(0, 0, 0, 0.6),
-                0 0 0 1px rgba(255, 255, 255, 0.04) inset,
-                0 1px 0 rgba(255, 255, 255, 0.07) inset;
-            animation: cardAppear 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-        }
-        @keyframes cardAppear {
-            from { opacity: 0; transform: translateY(36px) scale(0.93); }
-            to   { opacity: 1; transform: translateY(0) scale(1); }
+            box-shadow: var(--shadow-lg);
+            animation: cardAppear 0.6s cubic-bezier(0.34, 1.2, 0.64, 1) both;
         }
 
-        /* Top glow line */
+        @keyframes cardAppear {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Subtle top accent line */
         .card::before {
             content: '';
             position: absolute;
-            top: -1px; left: 40px; right: 40px; height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(124, 58, 237, 0.6), rgba(14, 165, 233, 0.6), transparent);
-            border-radius: 1px;
+            top: 0; left: 0; right: 0; height: 3px;
+            background: var(--accent);
+            border-radius: 2px 2px 0 0;
         }
 
         /* ── Logo ── */
         .logo {
             text-align: center;
-            margin-bottom: 36px;
+            margin-bottom: 32px;
         }
         .logo-icon {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 76px; height: 76px;
-            border-radius: 22px;
-            background: linear-gradient(140deg, #7c3aed 0%, #0ea5e9 100%);
-            font-size: 34px;
-            margin-bottom: 18px;
-            box-shadow:
-                0 16px 36px rgba(124, 58, 237, 0.48),
-                0 0 0 1px rgba(255,255,255,0.12) inset;
-            animation: iconFloat 3.5s ease-in-out infinite;
+            width: 72px; height: 72px;
+            border-radius: 2px;
+            background: var(--accent);
+            color: #fff;
+            font-size: 32px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 16px rgba(123, 74, 44, 0.25);
         }
         @keyframes iconFloat {
-            0%, 100% { transform: translateY(0) rotate(-1deg); }
-            50%       { transform: translateY(-7px) rotate(1deg); }
+            0%, 100% { transform: translateY(0); }
+            50%      { transform: translateY(-4px); }
         }
+        .logo-icon { animation: iconFloat 4s ease-in-out infinite; }
         .logo h1 {
-            font-size: 22px; font-weight: 700;
+            font-size: 22px;
+            font-weight: 600;
             color: var(--text);
-            letter-spacing: -0.6px;
-            line-height: 1.25;
+            letter-spacing: 0.02em;
         }
-        .logo-sub {
-            margin-top: 5px;
-            font-size: 12px; font-weight: 400;
+        .logo p {
             color: var(--text-muted);
-            letter-spacing: 1.2px;
-            text-transform: uppercase;
+            font-size: 13px;
+            margin-top: 6px;
+            font-style: italic;
         }
 
         /* ── Tabs ── */
         .tabs {
             display: flex;
-            background: rgba(255,255,255,0.042);
-            border: 1px solid rgba(255,255,255,0.07);
-            border-radius: 14px;
-            padding: 4px;
-            margin-bottom: 30px;
-            gap: 4px;
+            border-bottom: 2px solid var(--border-light);
+            margin-bottom: 28px;
         }
         .tab {
             flex: 1;
-            padding: 11px 18px;
-            border: none;
-            background: transparent;
-            color: var(--text-muted);
-            font-size: 13.5px; font-weight: 500;
-            font-family: 'Inter', 'Microsoft YaHei', sans-serif;
-            border-radius: 10px;
+            text-align: center;
+            padding: 12px 0;
             cursor: pointer;
-            transition: all 0.28s ease;
-            position: relative;
-            overflow: hidden;
-            letter-spacing: 0.3px;
+            font-size: 14px;
+            color: var(--text-muted);
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: color 0.2s, border-color 0.2s;
+            font-weight: 500;
+            letter-spacing: 0.03em;
         }
         .tab.active {
-            background: linear-gradient(135deg, #7c3aed 0%, #0ea5e9 100%);
-            color: #fff;
-            box-shadow: 0 4px 18px rgba(124, 58, 237, 0.42);
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+            font-weight: 600;
         }
-        .tab:not(.active):hover {
-            color: rgba(255,255,255,0.6);
-            background: rgba(255,255,255,0.05);
+        .tab:hover { color: var(--accent); }
+
+        /* ── Form ── */
+        .field {
+            margin-bottom: 18px;
         }
-        /* Shimmer on hover */
-        .tab.active::after {
-            content: '';
-            position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.14), transparent);
-            animation: shimmer 2s infinite;
+        .field label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 600;
         }
-        @keyframes shimmer {
-            0%   { left: -100%; }
-            100% { left: 200%; }
+        .field input {
+            width: 100%;
+            padding: 11px 14px;
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: 2px;
+            font-size: 14px;
+            color: var(--text);
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+        .field input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(123, 74, 44, 0.08);
+        }
+        .field input::placeholder {
+            color: #c4b9a8;
         }
 
-        /* ── Panels ── */
-        .panel { display: none; }
-        .panel.active {
-            display: block;
-            animation: panelIn 0.3s ease both;
+        /* ── Submit ── */
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 2px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            letter-spacing: 0.04em;
+            transition: background 0.2s, transform 0.1s;
+            font-family: inherit;
         }
-        @keyframes panelIn {
-            from { opacity: 0; transform: translateX(12px); }
-            to   { opacity: 1; transform: translateX(0); }
-        }
+        .btn-submit:hover { background: var(--accent-hover); }
+        .btn-submit:active { transform: translateY(1px); }
 
         /* ── Alert ── */
         .alert {
             display: none;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 16px;
-            border-radius: 12px;
-            font-size: 13.5px; font-weight: 500;
-            margin-bottom: 22px;
-        }
-        .alert.visible { display: flex; animation: alertPop 0.3s ease both; }
-        @keyframes alertPop {
-            from { opacity: 0; transform: translateY(-8px) scale(0.97); }
-            to   { opacity: 1; transform: translateY(0) scale(1); }
+            padding: 10px 14px;
+            border-radius: 2px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            border-left: 3px solid;
         }
         .alert.success {
-            background: rgba(34, 197, 94, 0.1);
-            border: 1px solid rgba(34, 197, 94, 0.22);
-            color: #86efac;
+            background: #f0f5f1;
+            border-color: var(--success);
+            color: #3a5c45;
         }
         .alert.error {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.22);
-            color: #fca5a5;
-        }
-        .alert-icon {
-            flex-shrink: 0;
-            width: 20px; height: 20px;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 11px; font-weight: 700;
-        }
-        .alert.success .alert-icon { background: rgba(34,197,94,0.2); color: #22c55e; }
-        .alert.error   .alert-icon { background: rgba(239,68,68,0.2); color: #ef4444; }
-
-        /* ── Input Group ── */
-        .field {
-            margin-bottom: 20px;
-        }
-        .field label {
-            display: block;
-            font-size: 11.5px; font-weight: 600;
-            color: rgba(255,255,255,0.42);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 9px;
-        }
-        .input-wrap {
-            position: relative;
-        }
-        .input-icon {
-            position: absolute;
-            left: 15px; top: 50%;
-            transform: translateY(-50%);
-            width: 17px; height: 17px;
-            color: rgba(255,255,255,0.25);
-            pointer-events: none;
-            transition: color 0.25s;
-        }
-        .input-wrap input {
-            width: 100%;
-            padding: 13.5px 15px 13.5px 44px;
-            background: var(--input-bg);
-            border: 1px solid var(--input-border);
-            border-radius: 12px;
-            color: var(--text);
-            font-size: 14px;
-            font-family: 'Inter', 'Microsoft YaHei', sans-serif;
-            outline: none;
-            transition: all 0.25s ease;
-        }
-        .input-wrap input::placeholder { color: rgba(255,255,255,0.18); }
-        .input-wrap input:focus {
-            background: rgba(124, 58, 237, 0.07);
-            border-color: var(--input-focus-border);
-            box-shadow: 0 0 0 3.5px var(--input-focus-shadow);
-        }
-        .input-wrap input:focus ~ .input-icon {
-            color: rgba(124, 58, 237, 0.6);
-        }
-        .input-wrap:has(input:focus) .input-icon {
-            color: rgba(139, 92, 246, 0.7);
+            background: #fdf3f1;
+            border-color: var(--danger);
+            color: #8b342c;
         }
 
-        /* ── Submit button ── */
-        .btn-submit {
-            width: 100%;
-            padding: 14.5px;
-            border: none;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #7c3aed 0%, #0ea5e9 100%);
-            color: #fff;
-            font-size: 15px; font-weight: 600;
-            font-family: 'Inter', 'Microsoft YaHei', sans-serif;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            margin-top: 8px;
-            letter-spacing: 0.8px;
-        }
-        .btn-submit::before {
-            content: '';
-            position: absolute; inset: 0;
-            background: linear-gradient(135deg, #8b5cf6 0%, #38bdf8 100%);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        .btn-submit::after {
-            content: '';
-            position: absolute; top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.13), transparent);
-            transition: 0.55s;
-        }
-        .btn-submit:not(:disabled):hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(124, 58, 237, 0.48); }
-        .btn-submit:not(:disabled):hover::before { opacity: 1; }
-        .btn-submit:not(:disabled):hover::after { left: 200%; }
-        .btn-submit:not(:disabled):active { transform: translateY(0); box-shadow: none; }
-        .btn-submit:disabled {
-            opacity: 0.65;
-            cursor: not-allowed;
-            transform: none;
-        }
-        .btn-submit span { position: relative; z-index: 1; }
-
-        /* ── Footer ── */
+        /* ── Card foot ── */
         .card-foot {
-            margin-top: 24px;
             text-align: center;
-            font-size: 11.5px;
-            color: rgba(255,255,255,0.18);
-            letter-spacing: 0.3px;
+            margin-top: 18px;
+            font-size: 12px;
+            color: var(--text-muted);
         }
 
         /* ── Responsive ── */
         @media (max-width: 480px) {
-            .card { width: 92vw; padding: 36px 28px 32px; }
+            .card {
+                width: 92%;
+                padding: 36px 28px 30px;
+            }
         }
+
+        /* Clean up old particle/bg elements if they exist */
+        .bg-layer, .bg-gradient, .orb, .grid, .particle {
+            display: none;
+        }
+    
+        /* ── Panel (login/register) ── */
+        .panel { display: none; }
+        .panel.active { display: block; }
+
+        /* ── Input wrapper with icon ── */
+        .input-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .input-wrap input {
+            width: 100%;
+            padding: 11px 14px 11px 40px;
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: 2px;
+            font-size: 14px;
+            color: var(--text);
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+        .input-wrap input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(123, 74, 44, 0.08);
+        }
+        .input-wrap input::placeholder { color: #c4b9a8; }
+        .input-icon {
+            position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+            width: 18px; height: 18px; color: #b0a590;
+        }
+
+        /* ── Logo subtitle ── */
+        .logo-sub {
+            color: var(--text-muted);
+            font-size: 12px;
+            margin-top: 4px;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        /* ── Alert icon ── */
+        .alert-icon { display: inline-block; margin-right: 6px; font-weight: bold; }
+
     </style>
 </head>
 <body>
-
-<!-- Background -->
-<div class="bg-layer">
-    <div class="bg-gradient"></div>
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
-    <div class="orb orb-4"></div>
-    <div class="grid"></div>
-</div>
-
-<!-- Floating particles (JS generated) -->
 
 <!-- Card -->
 <div class="card">
     <!-- Logo -->
     <div class="logo">
-        <div class="logo-icon">📚</div>
+        <div class="logo-icon">&#x2766;</div>
         <h1>图书管理系统</h1>
         <p class="logo-sub">Library Management System</p>
     </div>
@@ -496,7 +382,7 @@
 
 <script>
     /* ─── Floating particles ─── */
-    const emojis = ['📚','📖','📕','📗','📘','📙','✏️','🔖'];
+    const emojis = ['&#x2766;','&#x25C6;','&#x25C6;','&#x25C6;','&#x25C6;','&#x25C6;','&#x270E;','&#x2042;'];
     for (let i = 0; i < 12; i++) {
         const el = document.createElement('div');
         el.className = 'particle';
@@ -535,7 +421,7 @@
         const box  = document.getElementById('alert-' + panel);
         const icon = document.getElementById('alert-' + panel + '-icon');
         const text = document.getElementById('alert-' + panel + '-msg');
-        icon.textContent = type === 'success' ? '✓' : '✕';
+        icon.textContent = type === 'success' ? '&#x2713;' : '&#x2717;';
         text.textContent = msg;
         box.className = 'alert ' + type + ' visible';
         if (type === 'success') setTimeout(() => hideAlert(panel), 4000);

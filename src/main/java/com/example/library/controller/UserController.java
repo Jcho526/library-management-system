@@ -10,12 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -193,20 +191,15 @@ public class UserController {
         try {
             // 固定扩展名为 .png
             String filename = "custom_avatar_" + sessionUser.getId() + ".png";
-            
-            // 保存到源代码目录 src/main/resources/static/User_Picture/
-            String srcDirPath = "src/main/resources/static/User_Picture/";
-            File srcDir = new File(srcDirPath);
-            if (!srcDir.exists()) srcDir.mkdirs();
-            Path srcFilePath = Paths.get(srcDir.getAbsolutePath(), filename);
-            Files.copy(file.getInputStream(), srcFilePath, StandardCopyOption.REPLACE_EXISTING);
+            byte[] bytes = file.getBytes();
 
-            // 同时保存到 target/classes/static/User_Picture/ 以便热更新立即生效
-            String targetDirPath = "target/classes/static/User_Picture/";
-            File targetDir = new File(targetDirPath);
-            if (!targetDir.exists()) targetDir.mkdirs();
-            Path targetFilePath = Paths.get(targetDir.getAbsolutePath(), filename);
-            Files.copy(file.getInputStream(), targetFilePath, StandardCopyOption.REPLACE_EXISTING);
+            // 保存到两个目录
+            Path srcPath = Paths.get("src/main/resources/static/User_Picture/", filename);
+            Path targetPath = Paths.get("target/classes/static/User_Picture/", filename);
+            Files.createDirectories(srcPath.getParent());
+            Files.createDirectories(targetPath.getParent());
+            Files.write(srcPath, bytes);
+            Files.write(targetPath, bytes);
 
             response.put("success", true);
             response.put("message", "头像上传成功");
@@ -219,6 +212,19 @@ public class UserController {
             response.put("message", "头像上传失败: " + e.getMessage());
             return ResponseEntity.status(500).body(response);
         }
+    }
+
+    /** 管理员：获取所有读者列表 */
+    @GetMapping("/users")
+    public ResponseEntity<List<User>> getAllUsers(HttpSession session) {
+        User sessionUser = (User) session.getAttribute("currentUser");
+        if (sessionUser == null || !"admin".equals(sessionUser.getRole())) {
+            return ResponseEntity.status(401).body(null);
+        }
+        List<User> users = userService.findAllReaders();
+        // 清除密码
+        users.forEach(u -> u.setPassword(null));
+        return ResponseEntity.ok(users);
     }
 
     /** 读者：获取自己的借阅记录 */

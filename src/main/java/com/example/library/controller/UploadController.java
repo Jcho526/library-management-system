@@ -4,12 +4,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 @RestController
@@ -56,20 +54,15 @@ public class UploadController {
             // 生成唯一文件名
             String filename = "cover_" + System.currentTimeMillis() + "_" +
                     new Random().nextInt(10000) + "." + ext;
+            byte[] bytes = file.getBytes();
 
-            // 保存到源代码目录
-            String srcDirPath = "src/main/resources/static/book_covers/";
-            File srcDir = new File(srcDirPath);
-            if (!srcDir.exists()) srcDir.mkdirs();
-            Path srcFilePath = Paths.get(srcDir.getAbsolutePath(), filename);
-            Files.copy(file.getInputStream(), srcFilePath, StandardCopyOption.REPLACE_EXISTING);
-
-            // 同时保存到 target 目录
-            String targetDirPath = "target/classes/static/book_covers/";
-            File targetDir = new File(targetDirPath);
-            if (!targetDir.exists()) targetDir.mkdirs();
-            Path targetFilePath = Paths.get(targetDir.getAbsolutePath(), filename);
-            Files.copy(file.getInputStream(), targetFilePath, StandardCopyOption.REPLACE_EXISTING);
+            // 保存到两个目录
+            Path srcPath = Paths.get("src/main/resources/static/book_covers/", filename);
+            Path targetPath = Paths.get("target/classes/static/book_covers/", filename);
+            Files.createDirectories(srcPath.getParent());
+            Files.createDirectories(targetPath.getParent());
+            Files.write(srcPath, bytes);
+            Files.write(targetPath, bytes);
 
             String url = "/book_covers/" + filename;
             response.put("success", true);

@@ -41,6 +41,7 @@ application-local.properties
 
 # Claude
 .claude/
+.agent/
 
 # Temp
 *.tmp

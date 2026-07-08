@@ -1,6 +1,7 @@
 package com.example.library.service;
 
 import com.example.library.entity.User;
+import java.util.List;
 
 public interface UserService {
 
@@ -20,6 +21,8 @@ public interface UserService {
     User findByUsername(String username);
 
     User findReaderById(Long id);
+
+    List<User> findAllReaders();
 
     boolean updateReader(User user);
 }
